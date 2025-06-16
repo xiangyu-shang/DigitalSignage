@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片加载调试工具</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+        .test-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .image-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 10px;
+            position: relative;
+        }
+        .image-container {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            background: #f5f5f5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .path-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .debug-output {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 0 0 0 6px;
+            font-size: 12px;
+        }
+        button {
+            background: #4285F4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #3367D6;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>电子标牌系统 - 图片加载调试工具</h1>
+    
+    <div class="controls">
+        <button id="run-tests">运行所有测试</button>
+        <button id="clear-cache">清除缓存</button>
+        <button id="check-network">检查网络请求</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>商品图片测试</h2>
+        <div class="image-grid" id="product-images">
+            <!-- 动态生成的图片测试卡片将在这里显示 -->
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>不同路径格式测试</h2>
+        <div class="image-grid" id="path-format-tests">
+            <!-- 路径格式测试将在这里显示 -->
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>占位图测试</h2>
+        <div class="image-grid">
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="/images/test-image-placeholder.svg" alt="占位图" />
+                    <span class="badge">SVG</span>
+                </div>
+                <div class="path-info">/images/test-image-placeholder.svg</div>
+                <div class="status" id="placeholder-status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试结果</h2>
+        <div class="debug-output" id="console-output"></div>
+    </div>
+    
+    <script>
+        // 测试配置
+        const productImages = [
+            { name: 'drink1_thumbnail', path: '/images/drink1_thumbnail.jpg' },
+            { name: 'drink1_main', path: '/images/drink1_main.jpg' },
+            { name: 'drink1_1', path: '/images/drink1_1.jpg' },
+            { name: 'drink1_2', path: '/images/drink1_2.jpg' },
+            { name: 'drink1_3', path: '/images/drink1_3.jpg' }, // 测试不存在的图片
+            { name: 'placeholder1', path: '/images/placeholder1.png' },
+            { name: 'placeholder2', path: '/images/placeholder2.png' }
+        ];
+        
+        // 不同路径格式测试
+        const pathFormatTests = [
+            { format: '绝对路径', path: '/images/drink1_thumbnail.jpg' },
+            { format: '相对路径(./)', path: './images/drink1_thumbnail.jpg' },
+            { format: '相对路径(无前缀)', path: 'images/drink1_thumbnail.jpg' },
+            { format: '相对路径(../)', path: '../images/drink1_thumbnail.jpg' },
+            { format: '相对public路径', path: './public/images/drink1_thumbnail.jpg' }
+        ];
+        
+        // 调试日志
+        const logs = [];
+        
+        // 自定义控制台日志函数
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+        
+        function logToDisplay(...args) {
+            const message = args.map(arg => {
+                if (typeof arg === 'object') {
+                    try {
+                        return JSON.stringify(arg, null, 2);
+                    } catch (e) {
+                        return arg.toString();
+                    }
+                }
+                return arg;
+            }).join(' ');
+            
+            logs.push({ type: 'log', message });
+            updateConsoleOutput();
+            originalConsole.log(...args);
+        }
+        
+        function errorToDisplay(...args) {
+            const message = args.map(arg => {
+                if (typeof arg === 'object') {
+                    try {
+                        return JSON.stringify(arg, null, 2);
+                    } catch (e) {
+                        return arg.toString();
+                    }
+                }
+                return arg;
+            }).join(' ');
+            
+            logs.push({ type: 'error', message });
+            updateConsoleOutput();
+            originalConsole.error(...args);
+        }
+        
+        // 替换控制台方法
+        console.log = logToDisplay;
+        console.error = errorToDisplay;
+        
+        // 更新控制台输出
+        function updateConsoleOutput() {
+            const output = document.getElementById('console-output');
+            output.innerHTML = logs.map(log => {
+                return `<div class="${log.type === 'error' ? 'error' : ''}">[${log.type}] ${log.message}</div>`;
+            }).join('');
+            
+            // 自动滚动到底部
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // 创建图片测试卡片
+        function createImageCard(container, item) {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'image-container';
+            
+            const img = document.createElement('img');
+            img.src = item.path;
+            img.alt = item.name || item.format || 'Test Image';
+            
+            const pathInfo = document.createElement('div');
+            pathInfo.className = 'path-info';
+            pathInfo.textContent = item.path;
+            
+            const status = document.createElement('div');
+            status.className = 'status';
+            status.id = `status-${Math.random().toString(36).substr(2, 9)}`;
+            
+            img.onload = () => {
+                console.log(`✅ 图片加载成功: ${item.path}`);
+                status.innerHTML = '<span class="success">✓ 加载成功</span>';
+                status.dataset.success = true;
+            };
+            
+            img.onerror = () => {
+                console.error(`❌ 图片加载失败: ${item.path}`);
+                status.innerHTML = '<span class="error">✗ 加载失败</span>';
+                status.dataset.success = false;
+            };
+            
+            // 添加图片格式标记
+            if (item.path.endsWith('.jpg') || item.path.endsWith('.jpeg')) {
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = 'JPG';
+                imageContainer.appendChild(badge);
+            } else if (item.path.endsWith('.png')) {
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = 'PNG';
+                imageContainer.appendChild(badge);
+            }
+            
+            imageContainer.appendChild(img);
+            card.appendChild(imageContainer);
+            card.appendChild(pathInfo);
+            card.appendChild(status);
+            
+            container.appendChild(card);
+        }
+        
+        // 初始化测试
+        function initTests() {
+            const productContainer = document.getElementById('product-images');
+            const pathFormatContainer = document.getElementById('path-format-tests');
+            
+            // 清空容器
+            productContainer.innerHTML = '';
+            pathFormatContainer.innerHTML = '';
+            
+            // 添加商品图片测试
+            productImages.forEach(image => {
+                createImageCard(productContainer, image);
+            });
+            
+            // 添加路径格式测试
+            pathFormatTests.forEach(test => {
+                createImageCard(pathFormatContainer, test);
+            });
+            
+            // 测试占位图
+            const placeholderStatus = document.getElementById('placeholder-status');
+            const placeholderImg = document.querySelector('[alt="占位图"]');
+            
+            placeholderImg.onload = () => {
+                console.log('✅ 占位图加载成功');
+                placeholderStatus.innerHTML = '<span class="success">✓ 加载成功</span>';
+            };
+            
+            placeholderImg.onerror = () => {
+                console.error('❌ 占位图加载失败');
+                placeholderStatus.innerHTML = '<span class="error">✗ 加载失败</span>';
+            };
+        }
+        
+        // 运行所有测试
+        document.getElementById('run-tests').addEventListener('click', () => {
+            logs.push({ type: 'log', message: '------- 开始运行图片加载测试 -------' });
+            initTests();
+            
+            // 测试浏览器缓存访问
+            logs.push({ type: 'log', message: '测试浏览器缓存和HTTP头...' });
+            fetch('/images/drink1_thumbnail.jpg', { method: 'HEAD' })
+                .then(response => {
+                    logs.push({ type: 'log', message: `HTTP状态: ${response.status} ${response.statusText}` });
+                    logs.push({ type: 'log', message: `内容类型: ${response.headers.get('content-type')}` });
+                    logs.push({ type: 'log', message: `缓存控制: ${response.headers.get('cache-control')}` });
+                })
+                .catch(err => {
+                    logs.push({ type: 'error', message: `请求失败: ${err.message}` });
+                })
+                .finally(() => {
+                    updateConsoleOutput();
+                });
+        });
+        
+        // 清除缓存
+        document.getElementById('clear-cache').addEventListener('click', () => {
+            logs.push({ type: 'log', message: '尝试清除图片缓存...' });
+            
+            // 清除URL参数缓存
+            const timestamp = new Date().getTime();
+            
+            document.querySelectorAll('img').forEach(img => {
+                const originalSrc = img.src.split('?')[0];
+                img.src = `${originalSrc}?t=${timestamp}`;
+                logs.push({ type: 'log', message: `更新图片地址: ${img.src}` });
+            });
+            
+            updateConsoleOutput();
+        });
+        
+        // 检查网络请求
+        document.getElementById('check-network').addEventListener('click', () => {
+            logs.push({ type: 'log', message: '请打开浏览器的开发者工具Network面板查看网络请求' });
+            logs.push({ type: 'log', message: '重新加载各种图片以检查网络请求状态...' });
+            
+            // 强制重新加载图片
+            document.querySelectorAll('img').forEach(img => {
+                const originalSrc = img.src.split('?')[0];
+                const timestamp = new Date().getTime();
+                const randomTest = Math.floor(Math.random() * 1000);
+                
+                logs.push({ type: 'log', message: `重新加载: ${originalSrc}` });
+                
+                // 创建新的Image对象进行测试
+                const testImg = new Image();
+                testImg.onload = () => logs.push({ type: 'log', message: `✅ 加载成功: ${testImg.src}` });
+                testImg.onerror = () => logs.push({ type: 'error', message: `❌ 加载失败: ${testImg.src}` });
+                testImg.src = `${originalSrc}?test=${randomTest}&t=${timestamp}`;
+            });
+            
+            updateConsoleOutput();
+        });
+        
+        // 初始化页面
+        window.addEventListener('DOMContentLoaded', () => {
+            logs.push({ type: 'log', message: '图片加载调试工具已加载' });
+            logs.push({ type: 'log', message: '请点击"运行所有测试"按钮开始测试' });
+            updateConsoleOutput();
+        });
+    </script>
+</body>
+</html> 

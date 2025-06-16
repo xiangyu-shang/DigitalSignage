@@ -1,0 +1,112 @@
+/**
+ * 图标样式表
+ * 使用Unicode字符作为图标
+ */
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-style: normal;
+  font-size: calc(1.5 * var(--vw-unit) * 16); /* 转换为vw单位，基于16px基准字体大小 */
+  line-height: 1;
+}
+
+/* 所有商品 */
+.icon-all::before {
+  content: '\2630'; /* ☰ 三杠 */
+}
+
+/* 手机图标 */
+.icon-phone-portrait::before {
+  content: '\1F4F1'; /* 📱 手机 */
+}
+
+/* 笔记本电脑图标 */
+.icon-laptop::before {
+  content: '\1F4BB'; /* 💻 电脑 */
+}
+
+/* 平板电脑图标 */
+.icon-tablet-portrait::before {
+  content: '\1F5A5'; /* 🖥 平板 */
+}
+
+/* 手表图标 */
+.icon-watch::before {
+  content: '\231A'; /* ⌚ 手表 */
+}
+
+/* 耳机图标 */
+.icon-headset::before {
+  content: '\1F3A7'; /* 🎧 耳机 */
+}
+
+/* 相机图标 */
+.icon-camera::before {
+  content: '\1F4F7'; /* 📷 相机 */
+}
+
+/* 游戏控制器图标 */
+.icon-game-controller::before {
+  content: '\1F3AE'; /* 🎮 游戏手柄 */
+}
+
+/* 家庭图标 */
+.icon-home::before {
+  content: '\1F3E0'; /* 🏠 房子 */
+}
+
+/* 购物车图标 */
+.icon-cart::before {
+  content: '\1F6D2'; /* 🛒 购物车 */
+}
+
+/* 设置图标 */
+.icon-settings::before {
+  content: '\2699'; /* ⚙ 齿轮 */
+}
+
+/* 搜索图标 */
+.icon-search::before {
+  content: '\1F50D'; /* 🔍 搜索 */
+}
+
+/* 箭头图标 */
+.icon-arrow-back::before {
+  content: '\2190'; /* ← 左箭头 */
+}
+
+.icon-arrow-forward::before {
+  content: '\2192'; /* → 右箭头 */
+}
+
+/* 加减图标 */
+.icon-add::before {
+  content: '\002B'; /* + 加号 */
+}
+
+.icon-remove::before {
+  content: '\2212'; /* − 减号 */
+}
+
+/* 关闭图标 */
+.icon-close::before {
+  content: '\00D7'; /* × 乘号 */
+}
+
+/* 星星图标 */
+.icon-star::before {
+  content: '\2605'; /* ★ 星 */
+}
+
+.icon-star-outline::before {
+  content: '\2606'; /* ☆ 空星 */
+}
+
+/* 用户图标 */
+.icon-user::before {
+  content: '\1F464'; /* 👤 用户 */
+} 

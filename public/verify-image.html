@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片验证页面</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .image-container {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .image-item {
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 6px;
+            background: white;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #eee;
+        }
+        .status {
+            margin-top: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; font-size: 12px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <h1>电子标牌系统 - 图片验证工具</h1>
+    <p>本页面用于验证系统中的图片是否能正确加载和显示。</p>
+    
+    <div class="image-container">
+        <h2>drink1 系列图片验证</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <h3>drink1_thumbnail.jpg</h3>
+                <img src="/images/drink1_thumbnail.jpg" alt="饮品缩略图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/drink1_thumbnail.jpg</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>drink1_main.jpg</h3>
+                <img src="/images/drink1_main.jpg" alt="饮品主图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/drink1_main.jpg</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>drink1_1.jpg</h3>
+                <img src="/images/drink1_1.jpg" alt="饮品图1" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/drink1_1.jpg</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>drink1_2.jpg</h3>
+                <img src="/images/drink1_2.jpg" alt="饮品图2" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/drink1_2.jpg</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="image-container">
+        <h2>占位图片验证</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <h3>placeholder.png</h3>
+                <img src="/images/placeholder.png" alt="占位图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/placeholder.png</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>placeholder1.png</h3>
+                <img src="/images/placeholder1.png" alt="占位图1" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/placeholder1.png</div>
+            </div>
+
+            <div class="image-item">
+                <h3>SVG占位图</h3>
+                <img src="/images/test-image-placeholder.svg" alt="SVG占位图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/test-image-placeholder.svg</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-container">
+        <h2>不同路径验证</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <h3>绝对路径 /images/</h3>
+                <img src="/images/drink1_thumbnail.jpg" alt="饮品缩略图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: /images/drink1_thumbnail.jpg</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>相对路径 ./images/</h3>
+                <img src="./images/drink1_thumbnail.jpg" alt="饮品缩略图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: ./images/drink1_thumbnail.jpg</div>
+            </div>
+            
+            <div class="image-item">
+                <h3>无前缀路径 images/</h3>
+                <img src="images/drink1_thumbnail.jpg" alt="饮品缩略图" onerror="this.parentNode.querySelector('.status').className='status error';this.parentNode.querySelector('.status').textContent='❌ 加载失败';">
+                <div class="status success">✅ 正常显示</div>
+                <div class="info">路径: images/drink1_thumbnail.jpg</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // 页面加载完成时，检查所有图片的加载状态
+    window.addEventListener('load', function() {
+        const images = document.querySelectorAll('img');
+        images.forEach(function(img) {
+            const statusDiv = img.nextElementSibling;
+            if (img.complete && img.naturalHeight !== 0) {
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ 正常显示';
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ 加载失败';
+            }
+        });
+    });
+    </script>
+</body>
+</html> 

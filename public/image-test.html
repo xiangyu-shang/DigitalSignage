@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; }
+        h2 { margin-top: 0; }
+        img { max-width: 300px; max-height: 300px; border: 1px solid #ccc; }
+        .error { color: red; display: none; }
+        img.broken + .error { display: block; }
+    </style>
+</head>
+<body>
+    <h1>图片路径测试</h1>
+    
+    <div class="test-section">
+        <h2>方法1: 使用/开头的绝对路径</h2>
+        <img src="/images/drink1_thumbnail.jpg" alt="绝对路径图片" onerror="this.classList.add('broken')">
+        <div class="error">❌ 图片加载失败</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>方法2: 使用./开头的相对路径</h2>
+        <img src="./images/drink1_thumbnail.jpg" alt="相对路径图片" onerror="this.classList.add('broken')">
+        <div class="error">❌ 图片加载失败</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>方法3: 使用../开头的相对路径</h2>
+        <img src="../public/images/drink1_thumbnail.jpg" alt="上级目录图片" onerror="this.classList.add('broken')">
+        <div class="error">❌ 图片加载失败</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>方法4: 使用纯文件名</h2>
+        <img src="images/drink1_thumbnail.jpg" alt="纯文件名图片" onerror="this.classList.add('broken')">
+        <div class="error">❌ 图片加载失败</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>方法5: 使用完整协议路径</h2>
+        <img src="file:///E:/code/Project/DigitalSignage/public/images/drink1_thumbnail.jpg" alt="完整路径图片" onerror="this.classList.add('broken')">
+        <div class="error">❌ 图片加载失败</div>
+    </div>
+    
+    <script>
+        // 添加图片加载成功标记
+        document.querySelectorAll('img').forEach(img => {
+            img.onload = function() {
+                const success = document.createElement('div');
+                success.textContent = '✅ 图片加载成功';
+                success.style.color = 'green';
+                this.parentNode.appendChild(success);
+            };
+        });
+    </script>
+</body>
+</html> 

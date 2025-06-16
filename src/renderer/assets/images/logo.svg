@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 商城图标 - 简化的购物袋与标签 -->
+  <rect x="40" y="60" width="120" height="110" rx="10" fill="#3498DB"/>
+  <path d="M65 60V45C65 30 80 20 100 20C120 20 135 30 135 45V60" stroke="white" stroke-width="8"/>
+  <rect x="70" y="90" width="60" height="30" rx="5" fill="white"/>
+  <circle cx="70" cy="140" r="10" fill="white"/>
+  <circle cx="130" cy="140" r="10" fill="white"/>
+</svg>

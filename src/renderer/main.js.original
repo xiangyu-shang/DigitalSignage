@@ -1,0 +1,86 @@
+import { createApp } from 'vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import routes from './router';
+import './assets/styles/main.css';
+import './assets/styles/icons.css';
+import { initEffects } from './utils/effects';
+
+// 确保页面使用UTF-8编码
+document.addEventListener('DOMContentLoaded', () => {
+  // 检查charset元标签
+  const existingMetaCharset = document.querySelector('meta[charset]');
+  if (!existingMetaCharset) {
+    const metaCharset = document.createElement('meta');
+    metaCharset.setAttribute('charset', 'UTF-8');
+    document.head.prepend(metaCharset);
+  }
+
+  // 检查Content-Type元标签
+  const existingMetaContentType = document.querySelector('meta[http-equiv="Content-Type"]');
+  if (!existingMetaContentType) {
+    const metaContentType = document.createElement('meta');
+    metaContentType.setAttribute('http-equiv', 'Content-Type');
+    metaContentType.setAttribute('content', 'text/html; charset=UTF-8');
+    document.head.appendChild(metaContentType);
+  }
+
+  // 禁用硬件加速相关的CSS特性
+  try {
+    const style = document.createElement('style');
+    style.textContent = `
+      * {
+        -webkit-transform: translate3d(0, 0, 0);
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000;
+      }
+      
+      canvas, .webgl {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    console.log('已禁用CSS硬件加速特性');
+  } catch (e) {
+    console.error('禁用CSS硬件加速失败:', e);
+  }
+});
+
+/**
+ * 创建Vue应用实例
+ */
+const app = createApp(App);
+
+/**
+ * 创建并配置路由
+ */
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
+
+/**
+ * 创建Pinia状态管理实例
+ */
+const pinia = createPinia();
+
+// 注册插件
+app.use(router);
+app.use(pinia);
+
+// 初始化特效
+initEffects();
+
+// 应用级错误处理
+app.config.errorHandler = (err, vm, info) => {
+  console.error('Vue错误:', err);
+  console.error('错误组件:', vm);
+  console.error('错误信息:', info);
+};
+
+// 挂载应用
+app.mount('#app'); 
