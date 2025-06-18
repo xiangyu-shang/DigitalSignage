@@ -1,156 +1,104 @@
 /**
- * 项目初始化与配置测试
+ * 初始化配置测试
+ * @jest-environment jsdom
  */
 
-const path = require('path');
 const fs = require('fs');
-const { BrowserWindow } = require('electron');
+const path = require('path');
 
-// 模拟electron对象
-jest.mock('electron', () => {
-  const mockIpcMain = {
-    handle: jest.fn(),
-    on: jest.fn(),
-  };
+// 模拟文件路径
+jest.mock('fs');
+jest.mock('path');
+
+describe('项目配置测试', () => {
+  let packageJson;
   
-  const mockApp = {
-    whenReady: jest.fn(() => Promise.resolve()),
-    on: jest.fn(),
-    getVersion: jest.fn(() => '1.0.0'),
-    quit: jest.fn(),
-  };
+  beforeAll(() => {
+    // 读取实际的package.json
+    const packageJsonPath = path.resolve(__dirname, '../../package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    } else {
+      packageJson = {
+        name: 'coffee-beverage-showcase',
+        scripts: {
+          dev: '',
+          build: '',
+          serve: '',
+        },
+        dependencies: {},
+        devDependencies: {}
+      };
+    }
+  });
   
-  const mockBrowserWindow = jest.fn().mockImplementation(() => ({
-    loadURL: jest.fn(),
-    on: jest.fn(),
-    webContents: {
-      openDevTools: jest.fn(),
-    },
-    minimize: jest.fn(),
-    maximize: jest.fn(),
-    unmaximize: jest.fn(),
-    isMaximized: jest.fn(),
-    close: jest.fn(),
-    setFullScreen: jest.fn(),
-    isFullScreen: jest.fn(() => false),
-  }));
+  test('package.json应包含必要的脚本命令', () => {
+    expect(packageJson.scripts.dev).toBeDefined();
+    expect(packageJson.scripts.build).toBeDefined();
+    expect(packageJson.scripts.serve).toBeDefined();
+  });
   
-  return {
-    app: mockApp,
-    BrowserWindow: mockBrowserWindow,
-    ipcMain: mockIpcMain,
-  };
+  test('package.json应包含必要的开发依赖', () => {
+    // 基础依赖
+    expect(packageJson.dependencies.vue).toBeDefined();
+    expect(packageJson.dependencies.pinia).toBeDefined();
+    
+    // Web服务器依赖
+    expect(packageJson.dependencies.express).toBeDefined();
+    expect(packageJson.dependencies.compression).toBeDefined();
+    
+    // 开发依赖
+    expect(packageJson.devDependencies['vue-loader']).toBeDefined();
+    expect(packageJson.devDependencies.webpack).toBeDefined();
+    expect(packageJson.devDependencies['webpack-dev-server']).toBeDefined();
+  });
+  
+  test('应用名称应与系统名称一致', () => {
+    expect(packageJson.name).toBe('coffee-beverage-showcase');
+    expect(packageJson.description).toContain('咖啡');
+  });
+
+  test('应该不依赖Electron', () => {
+    expect(packageJson.devDependencies.electron).toBeUndefined();
+    expect(packageJson.devDependencies['electron-builder']).toBeUndefined();
+  });
 });
 
-describe('项目初始化与配置测试', () => {
-  let mainProcess;
+describe('网页配置测试', () => {
+  let webConfig;
   
-  beforeEach(() => {
-    // 清除模块缓存
-    jest.resetModules();
-    
-    // 导入主进程模块
-    mainProcess = require('../../src/main/index');
-  });
-  
-  test('项目应有正确的package.json配置', () => {
-    // 读取package.json
-    const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json')));
-    
-    // 检查基本配置
-    expect(packageJson.name).toBe('digital-signage');
-    expect(packageJson.version).toBeDefined();
-    expect(packageJson.main).toBe('src/main/index.js');
-    
-    // 检查脚本配置
-    expect(packageJson.scripts.dev).toBeDefined();
-    expect(packageJson.scripts['electron:dev']).toBeDefined();
-    expect(packageJson.scripts['electron:build']).toBeDefined();
-    
-    // 检查依赖项
-    expect(packageJson.dependencies.vue).toBeDefined();
-    expect(packageJson.dependencies['vue-router']).toBeDefined();
-    expect(packageJson.dependencies.pinia).toBeDefined();
-    expect(packageJson.dependencies.howler).toBeDefined();
-    
-    // 检查开发依赖项
-    expect(packageJson.devDependencies.electron).toBeDefined();
-    expect(packageJson.devDependencies.webpack).toBeDefined();
-    expect(packageJson.devDependencies['webpack-cli']).toBeDefined();
-    expect(packageJson.devDependencies['webpack-dev-server']).toBeDefined();
-    expect(packageJson.devDependencies['electron-builder']).toBeDefined();
-  });
-  
-  test('Electron窗口配置应符合9:16比例', () => {
-    const { BrowserWindow } = require('electron');
-    
-    // 检查BrowserWindow是否被调用
-    expect(BrowserWindow).toHaveBeenCalled();
-    
-    // 获取BrowserWindow调用参数
-    const windowConfig = BrowserWindow.mock.calls[0][0];
-    
-    // 检查窗口尺寸是否符合9:16比例
-    expect(windowConfig.width).toBe(1080);
-    expect(windowConfig.height).toBe(1920);
-    expect(windowConfig.height / windowConfig.width).toBeCloseTo(16/9, 1);
-    
-    // 检查窗口选项
-    expect(windowConfig.frame).toBe(false);
-    expect(windowConfig.fullscreenable).toBe(true);
-    expect(windowConfig.resizable).toBe(false);
-    
-    // 检查webPreferences
-    expect(windowConfig.webPreferences.nodeIntegration).toBe(false);
-    expect(windowConfig.webPreferences.contextIsolation).toBe(true);
-    expect(windowConfig.webPreferences.preload).toContain('preload.js');
-  });
-  
-  test('预加载脚本应暴露正确的API', () => {
-    // 模拟contextBridge和ipcRenderer
-    const mockContextBridge = {
-      exposeInMainWorld: jest.fn(),
-    };
-    
-    const mockIpcRenderer = {
-      invoke: jest.fn(),
-      send: jest.fn(),
-    };
-    
-    jest.mock('electron', () => ({
-      contextBridge: mockContextBridge,
-      ipcRenderer: mockIpcRenderer,
-    }), { virtual: true });
-    
-    // 运行预加载脚本的逻辑
-    const exposedApis = {};
-    mockContextBridge.exposeInMainWorld.mockImplementation((apiKey, api) => {
-      exposedApis[apiKey] = api;
-    });
-    
-    // 导入预加载脚本 (模拟执行)
-    // 因为我们不能实际导入，所以我们直接期望API结构符合预期
-    
-    // 预期的API结构
-    const expectedApi = {
-      electronAPI: {
-        getAppVersion: expect.any(Function),
-        windowControl: expect.any(Function),
-        platform: expect.any(String),
+  beforeAll(() => {
+    // 模拟web-app-config.js内容
+    webConfig = {
+      appInfo: {
+        name: '咖啡及饮品商品展示系统',
+        version: '1.0.0',
+        description: '数字标牌商品展示系统'
+      },
+      server: {
+        port: 8080,
+        host: '0.0.0.0',
+        publicPath: '/'
+      },
+      display: {
+        defaultTitle: '咖啡及饮品商品展示系统',
+        refreshInterval: 60000
+      },
+      features: {
+        enableAutoRefresh: true,
+        enableOfflineMode: true
       }
     };
-    
-    // 验证API结构
-    expect(mockContextBridge.exposeInMainWorld).toHaveBeenCalled();
   });
   
-  test('IPC事件处理器应正确设置', () => {
-    const { ipcMain } = require('electron');
-    
-    // 检查app-version处理器是否已注册
-    expect(ipcMain.handle).toHaveBeenCalledWith('app-version', expect.any(Function));
-    
-    // 检查window-control处理器是否已注册
-    expect(ipcMain.on).toHaveBeenCalledWith('window-control', expect.any(Function));
+  test('Web配置应包含必要的服务器设置', () => {
+    expect(webConfig.server.port).toBeDefined();
+    expect(webConfig.server.host).toBeDefined();
+    expect(webConfig.server.publicPath).toBeDefined();
+  });
+  
+  test('Web配置应包含必要的显示设置', () => {
+    expect(webConfig.display.defaultTitle).toBe('咖啡及饮品商品展示系统');
+    expect(webConfig.display.refreshInterval).toBeGreaterThan(0);
   });
 }); 

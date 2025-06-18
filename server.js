@@ -55,12 +55,19 @@ if (!fs.existsSync(logsDir)) {
 
 // 启动服务器
 app.listen(PORT, HOST, () => {
-  const logMessage = `服务器已启动: http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`;
-  console.log(logMessage);
+  console.log('='.repeat(60));
+  const localIp = HOST === '0.0.0.0' ? 'localhost' : HOST;
+  console.log(`服务器启动成功! 🚀`);
+  console.log(`- 本地访问: http://${localIp}:${PORT}`);
+  if (HOST === '0.0.0.0') {
+    console.log(`- 局域网访问: 通过本机IP地址:${PORT}`);
+  }
+  console.log(`- 健康检查: http://${localIp}:${PORT}/health`);
+  console.log('='.repeat(60));
   
   // 将启动信息写入日志文件
   const logFile = path.join(logsDir, `server-${new Date().toISOString().replace(/:/g, '-')}.log`);
-  fs.appendFileSync(logFile, `${new Date().toISOString()} - ${logMessage}\n`);
+  fs.appendFileSync(logFile, `${new Date().toISOString()} - 服务器启动成功: http://${localIp}:${PORT}\n`);
 });
 
 // 处理进程终止信号

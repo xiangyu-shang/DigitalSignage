@@ -176,6 +176,7 @@ function checkImagesDirectory() {
   const testImages = [
     '/images/test-image-placeholder.svg',
     '/images/drink1_thumbnail.jpg',
+    '/images/coffee1_thumbnail.jpg',
     '/images/placeholder1.png'
   ];
   

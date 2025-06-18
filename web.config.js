@@ -25,7 +25,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
-    publicPath: appConfig.server.publicPath || '/',
+    publicPath: '/',
     clean: true,
   },
   devtool: isDevelopment ? 'eval-source-map' : 'source-map',
@@ -66,7 +66,7 @@ module.exports = {
           },
         },
         generator: {
-          filename: 'assets/images/[name].[hash:8][ext]',
+          filename: 'images/[name].[hash:8][ext]',
         },
       },
       // 字体文件处理
@@ -74,7 +74,7 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/fonts/[name].[hash:8][ext]',
+          filename: 'fonts/[name].[hash:8][ext]',
         },
       },
       // 音频文件处理
@@ -82,7 +82,7 @@ module.exports = {
         test: /\.(mp3|wav|ogg)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/audio/[name].[hash:8][ext]',
+          filename: 'audio/[name].[hash:8][ext]',
         },
       },
     ],

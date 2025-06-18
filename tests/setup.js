@@ -1,39 +1,60 @@
 /**
- * Jest测试环境设置
+ * 单元测试全局设置
  */
 
-// 模拟window.electronAPI对象
-global.electronAPI = {
-  getAppVersion: jest.fn(() => Promise.resolve('1.0.0')),
-  windowControl: jest.fn(),
-  platform: 'win32'
-};
+// 设置全局变量
+global.LOCAL_TESTING = true;
 
-// 模拟本地存储
-class LocalStorageMock {
-  constructor() {
-    this.store = {};
-  }
+// 静态资源路径配置
+global.__static = require('path').join(__dirname, '../public');
 
+// 模拟localStorage
+global.localStorage = {
+  store: {},
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value.toString();
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
   clear() {
     this.store = {};
   }
+};
 
+// 模拟sessionStorage
+global.sessionStorage = {
+  store: {},
   getItem(key) {
     return this.store[key] || null;
-  }
-
+  },
   setItem(key, value) {
-    this.store[key] = String(value);
-  }
-
+    this.store[key] = value.toString();
+  },
   removeItem(key) {
     delete this.store[key];
+  },
+  clear() {
+    this.store = {};
   }
-}
+};
 
-// 安装本地存储模拟
-global.localStorage = new LocalStorageMock();
+// 添加App配置
+global.__APP_CONFIG__ = {
+  display: {
+    defaultTitle: '咖啡及饮品商品展示系统',
+    refreshInterval: 60000,
+    defaultLanguage: 'zh-CN'
+  },
+  features: {
+    enableAutoRefresh: false, // 测试时禁用自动刷新
+    enableLogging: true,
+    showDebugInfo: true // 测试时显示调试信息
+  }
+};
 
 // 模拟CSS变量
 Object.defineProperty(global.window.document.documentElement, 'style', {
