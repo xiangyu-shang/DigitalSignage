@@ -14,12 +14,12 @@
           v-if="product.mainImage" 
           :src="getImageUrl(product.mainImage)" 
           class="product-img" 
-          alt="商品图片"
+          alt="Product Image"
           @error="(e) => handleImageError(e, product)"
           :data-product-id="product.id"
           :data-image-path="product.mainImage"
         >
-        <div class="product-badge" v-if="product.discount > 0">新品</div>
+        <div class="product-badge" v-if="product.discount > 0">New</div>
         <span v-if="!product.mainImage" class="product-image-text">{{ product.name }}</span>
       </div>
       
@@ -33,19 +33,19 @@
         <div class="price-section">
           <div class="current-price">¥{{ product.price }}</div>
           <div class="price-tag" v-if="product.discount > 0">{{ Math.round(product.discount * 100) }}% OFF</div>
-          <div class="original-price" v-if="product.originalPrice > product.price">面价 ¥{{ product.originalPrice }}</div>
+          <div class="original-price" v-if="product.originalPrice > product.price">Original ¥{{ product.originalPrice }}</div>
         </div>
         
         <!-- 规格选择区 -->
         <div class="specs-section">
           <!-- 杯型选择 -->
           <div class="option-row">
-            <div class="option-label">杯型</div>
+            <div class="option-label">Cup Size</div>
             <div class="option-values">
               <div 
                 class="option-value cup-option" 
-                :class="{ 'active': selectedOptions.size === '大杯 16oz' }"
-                @click="selectSize('大杯 16oz')"
+                :class="{ 'active': selectedOptions.size === 'Large 16oz' }"
+                @click="selectSize('Large 16oz')"
               >
                 <div class="cup-icon-container">
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="cup-icon">
@@ -59,116 +59,116 @@
                     <line x1="15" y1="8" x2="15" y2="16" stroke="rgb(0, 33, 170)" stroke-width="0.75" stroke-dasharray="1 1.5"/>
                   </svg>
                 </div>
-                <div class="cup-text">大杯 16oz</div>
+                <div class="cup-text">Large 16oz</div>
               </div>
             </div>
           </div>
           
           <!-- 温度选择 -->
           <div class="option-row">
-            <div class="option-label">温度</div>
+            <div class="option-label">Temperature</div>
             <div class="option-values">
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.temp === '冰' }"
-                @click="selectTemp('冰')"
+                :class="{ 'active': selectedOptions.temp === 'Iced' }"
+                @click="selectTemp('Iced')"
               >
-                冰
+                Iced
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.temp === '热' }"
-                @click="selectTemp('热')"
+                :class="{ 'active': selectedOptions.temp === 'Hot' }"
+                @click="selectTemp('Hot')"
               >
-                热
+                Hot
               </div>
             </div>
           </div>
           
           <!-- 糖度选择 -->
           <div class="option-row">
-            <div class="option-label">糖度</div>
+            <div class="option-label">Sweetness</div>
             <div class="option-values sugar-options">
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.sugar === '标准糖' }"
-                @click="selectSugar('标准糖')"
+                :class="{ 'active': selectedOptions.sugar === 'Standard' }"
+                @click="selectSugar('Standard')"
               >
-                <div class="recommended-tag tag-right">推荐七分甜</div>
-                标准糖
+                <div class="recommended-tag tag-right">Recommended 70% Sweet</div>
+                Standard
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.sugar === '少糖' }"
-                @click="selectSugar('少糖')"
+                :class="{ 'active': selectedOptions.sugar === 'Less Sweet' }"
+                @click="selectSugar('Less Sweet')"
               >
-                少糖
+                Less Sweet
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.sugar === '少少糖' }"
-                @click="selectSugar('少少糖')"
+                :class="{ 'active': selectedOptions.sugar === 'Slightly Sweet' }"
+                @click="selectSugar('Slightly Sweet')"
               >
-                少少糖
+                Slightly Sweet
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.sugar === '微糖' }"
-                @click="selectSugar('微糖')"
+                :class="{ 'active': selectedOptions.sugar === 'Lightly Sweet' }"
+                @click="selectSugar('Lightly Sweet')"
               >
-                微糖
+                Lightly Sweet
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.sugar === '不另加糖' }"
-                @click="selectSugar('不另加糖')"
+                :class="{ 'active': selectedOptions.sugar === 'No Added Sugar' }"
+                @click="selectSugar('No Added Sugar')"
               >
-                不另加糖
+                No Added Sugar
               </div>
             </div>
           </div>
           
           <!-- 奶基选择 -->
           <div class="option-row">
-            <div class="option-label">奶基</div>
+            <div class="option-label">Milk Base</div>
             <div class="option-values">
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.milk === '纯牛奶' }"
-                @click="selectMilk('纯牛奶')"
+                :class="{ 'active': selectedOptions.milk === 'Whole Milk' }"
+                @click="selectMilk('Whole Milk')"
               >
-                纯牛奶
+                Whole Milk
               </div>
               <div 
                 class="option-value" 
-                :class="{ 'active': selectedOptions.milk === '燕麦奶' }"
-                @click="selectMilk('燕麦奶')"
+                :class="{ 'active': selectedOptions.milk === 'Oat Milk' }"
+                @click="selectMilk('Oat Milk')"
               >
-                <div class="recommended-tag tag-right">OATLY咖啡大师</div>
-                燕麦奶
+                <div class="recommended-tag tag-right">OATLY Barista</div>
+                Oat Milk
               </div>
             </div>
           </div>
           
           <!-- 商品详情区 -->
           <div class="product-details">
-            <h3 class="section-title">商品详情</h3>
+            <h3 class="section-title">Product Details</h3>
             <div class="detail-row">
-              <span class="detail-label">能量</span>
-              <span class="detail-value">约 {{ 200 + Math.round(product.price * 10) }} kcal/杯</span>
+              <span class="detail-label">Energy</span>
+              <span class="detail-value">Approx. {{ 200 + Math.round(product.price * 10) }} kcal/cup</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">主要成分</span>
-              <span class="detail-value">{{ product.name }}特制配方</span>
+              <span class="detail-label">Main Ingredients</span>
+              <span class="detail-value">{{ product.name }} Special Recipe</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">过敏原</span>
-              <span class="detail-value">无</span>
+              <span class="detail-label">Allergens</span>
+              <span class="detail-value">None</span>
             </div>
             
             <div class="detail-notes">
-              *图片仅供参考，请以实物为准<br>
-              *建议收到后尽快饮用，风味更佳
+              *Images are for reference only, please refer to the actual product<br>
+              *Best enjoyed immediately for optimal flavor
             </div>
           </div>
         </div>
@@ -178,19 +178,19 @@
     <!-- 加载中状态 -->
     <div class="loading-container" v-if="!product">
       <div class="loading-spinner"></div>
-      <p>加载商品中...</p>
+      <p>Loading product...</p>
     </div>
     
     <!-- 底部购买栏 -->
     <div class="bottom-actions" v-if="product">
       <div class="total-amount">
-        <div class="amount-label">合计</div>
+        <div class="amount-label">Total</div>
         <div class="amount-value">¥{{ totalPrice.toFixed(2) }}</div>
       </div>
       
       <div class="action-buttons">
-        <button class="cart-btn" @click="addToCart">加入购物车</button>
-        <button class="buy-btn" @click="buyNow">立即购买</button>
+        <button class="cart-btn" @click="addToCart">Add to Cart</button>
+        <button class="buy-btn" @click="buyNow">Buy Now</button>
       </div>
     </div>
   </div>
@@ -210,10 +210,10 @@ const productStore = useProductStore();
 const cartStore = useCartStore();
 
 const selectedOptions = ref({
-  size: '大杯 16oz',
-  temp: '冰',
-  sugar: '少糖',
-  milk: '纯牛奶'
+  size: 'Large 16oz',
+  temp: 'Iced',
+  sugar: 'Less Sweet',
+  milk: 'Whole Milk'
 });
 
 // 获取当前商品
@@ -246,7 +246,7 @@ const totalPrice = computed(() => {
   let price = product.value.price;
   
   // 如果选择燕麦奶，价格可能会有调整
-  if (selectedOptions.value.milk === '燕麦奶') {
+  if (selectedOptions.value.milk === 'Oat Milk') {
     price += 2; // 假设燕麦奶比纯牛奶贵2元
   }
   
@@ -271,7 +271,7 @@ function addToCart() {
   // 显示成功提示
   const toast = document.createElement('div');
   toast.className = 'toast-message';
-  toast.textContent = '已添加到购物车';
+  toast.textContent = 'Added to Cart';
   document.body.appendChild(toast);
   
   setTimeout(() => {
@@ -314,7 +314,7 @@ function getCategoryColor(categoryId) {
 
 // 图片错误处理函数
 function handleImageError(event, product) {
-  console.error(`[DetailView] 图片加载失败: ${event.target.src}`, {
+  console.error(`[DetailView] Image loading failed: ${event.target.src}`, {
     productId: product.id,
     productName: product.name,
     imagePath: event.target.getAttribute('data-image-path'),
@@ -322,7 +322,7 @@ function handleImageError(event, product) {
   });
   
   // 尝试其他路径格式
-  console.log('[DetailView] 尝试不同的图片路径格式');
+  console.log('[DetailView] Trying different image path formats');
   
   // 提取原始文件名
   const origFilename = product.mainImage.split('/').pop();
@@ -339,8 +339,8 @@ function handleImageError(event, product) {
   
   testPaths.forEach(path => {
     const img = new Image();
-    img.onload = () => console.log(`[DetailView] 路径测试成功: ${path}`);
-    img.onerror = () => console.error(`[DetailView] 路径测试失败: ${path}`);
+    img.onload = () => console.log(`[DetailView] Path test successful: ${path}`);
+    img.onerror = () => console.error(`[DetailView] Path test failed: ${path}`);
     img.src = path;
   });
 }
@@ -357,15 +357,15 @@ onMounted(() => {
   
   // 打印图片加载诊断
   setTimeout(() => {
-    console.log('[DetailView] 图片加载状态报告:', getImageLoadReport());
+    console.log('[DetailView] Image loading status report:', getImageLoadReport());
     
     if (product.value) {
-      console.log('[DetailView] 当前产品图片信息:', {
-        产品ID: product.value.id,
-        产品名称: product.value.name,
-        主图: product.value.mainImage,
-        缩略图: product.value.thumbnailImage,
-        其他图片: product.value.images
+      console.log('[DetailView] Current product image info:', {
+        productId: product.value.id,
+        productName: product.value.name,
+        mainImage: product.value.mainImage,
+        thumbnailImage: product.value.thumbnailImage,
+        otherImages: product.value.images
       });
     }
   }, 3000);
@@ -373,7 +373,7 @@ onMounted(() => {
 
 // 组件卸载前
 onBeforeUnmount(() => {
-  console.log('[DetailView] 组件卸载前的图片加载报告:', getImageLoadReport());
+  console.log('[DetailView] Image loading report before component unmount:', getImageLoadReport());
 });
 </script>
 

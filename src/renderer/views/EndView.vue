@@ -5,7 +5,7 @@
       <button class="back-button" @click="goBack">
         <i class="back-icon"></i>
       </button>
-      <h1 class="page-title">确认订单</h1>
+      <h1 class="page-title">Confirm Order</h1>
       <div class="placeholder"></div>
     </div>
     
@@ -15,17 +15,17 @@
       <div class="delivery-section">
         <div class="section-header">
           <i class="location-icon">📍</i>
-          <h3 class="section-title">配送信息</h3>
+          <h3 class="section-title">Delivery Information</h3>
         </div>
         
         <div class="delivery-info">
           <div class="store-info">
-            <div class="store-name">臣溪工业园店</div>
+            <div class="store-name">Chenxi Industrial Park</div>
             <div class="store-distance">491m</div>
             <i class="arrow-icon">></i>
           </div>
-          <div class="address">广东省深圳市宝安区新安街道</div>
-          <div class="pickup-time">预计取餐时间 {{ getPickupTime() }}</div>
+          <div class="address">Xin'an Street, Bao'an District, Shenzhen, Guangdong</div>
+          <div class="pickup-time">Estimated Pickup Time {{ getPickupTime() }}</div>
         </div>
       </div>
       
@@ -33,7 +33,7 @@
       <div class="products-section">
         <div class="section-header">
           <i class="product-icon">🛍️</i>
-          <h3 class="section-title">商品信息</h3>
+          <h3 class="section-title">Product Information</h3>
         </div>
         
         <div class="product-list" v-if="cartStore.items.length > 0">
@@ -43,13 +43,13 @@
                 class="product-img" 
                 :style="{ backgroundColor: getCategoryColor(item.product.categoryId) }"
               >
-                <img v-if="item.product.thumbnailImage" :src="getImageUrl(item.product.thumbnailImage)" class="product-thumbnail" alt="商品图片">
+                <img v-if="item.product.thumbnailImage" :src="getImageUrl(item.product.thumbnailImage)" class="product-thumbnail" alt="Product Image">
                 <span v-else>{{ item.product.name.substring(0, 2) }}</span>
               </div>
             </div>
             <div class="product-info">
               <div class="product-title-row">
-                <h4 class="product-name">{{ item.product.name }}{{ item.options.size === '大杯 16oz' ? ' (特大杯)' : '' }}</h4>
+                <h4 class="product-name">{{ item.product.name }}{{ item.options.size === 'Large 16oz' ? ' (Large Cup)' : '' }}</h4>
                 <div class="product-price">¥{{ item.product.price }}</div>
               </div>
               
@@ -61,14 +61,14 @@
               </div>
               
               <div class="product-price-row">
-                <div class="coupon-tag">券后价</div>
+                <div class="coupon-tag">After Coupon</div>
                 <div class="product-quantity">×{{ item.quantity }}</div>
               </div>
             </div>
           </div>
         </div>
         <div class="empty-cart" v-else>
-          <p>购物车为空</p>
+          <p>Cart is Empty</p>
         </div>
       </div>
       
@@ -76,13 +76,13 @@
       <div class="discount-section">
         <div class="section-header">
           <i class="discount-icon">🏷️</i>
-          <h3 class="section-title">优惠信息</h3>
+          <h3 class="section-title">Discount Information</h3>
         </div>
         
         <div class="discount-item">
           <div class="discount-name">
-            <span>优惠券</span>
-            <span class="discount-count">3张可用</span>
+            <span>Coupons</span>
+            <span class="discount-count">3 Available</span>
           </div>
           <div class="discount-action">
             <span class="discount-value">-¥5</span>
@@ -92,8 +92,8 @@
         
         <div class="discount-item">
           <div class="discount-name">
-            <span>积分</span>
-            <span class="points-available">200可用</span>
+            <span>Points</span>
+            <span class="points-available">200 Available</span>
           </div>
           <div class="discount-action">
             <span class="points-value">-¥2</span>
@@ -106,7 +106,7 @@
       <div class="payment-section">
         <div class="section-header">
           <i class="payment-icon">💳</i>
-          <h3 class="section-title">支付方式</h3>
+          <h3 class="section-title">Payment Method</h3>
         </div>
         
         <div class="payment-options">
@@ -116,8 +116,8 @@
             @click="setPaymentMethod('wechat')"
           >
             <div class="payment-option-left">
-              <i class="payment-logo wechat-pay">微信</i>
-              <span>微信支付</span>
+              <i class="payment-logo wechat-pay">WeChat</i>
+              <span>WeChat Pay</span>
             </div>
             <i class="check-icon" :class="{ hidden: selectedPayment !== 'wechat' }">✓</i>
           </div>
@@ -128,8 +128,8 @@
             @click="setPaymentMethod('alipay')"
           >
             <div class="payment-option-left">
-              <i class="payment-logo alipay">支付宝</i>
-              <span>支付宝</span>
+              <i class="payment-logo alipay">Alipay</i>
+              <span>Alipay</span>
             </div>
             <i class="check-icon" :class="{ hidden: selectedPayment !== 'alipay' }">✓</i>
           </div>
@@ -140,8 +140,8 @@
             @click="setPaymentMethod('card')"
           >
             <div class="payment-option-left">
-              <i class="payment-logo card-pay">银行卡</i>
-              <span>银行卡支付</span>
+              <i class="payment-logo card-pay">Card</i>
+              <span>Card Payment</span>
             </div>
             <i class="check-icon" :class="{ hidden: selectedPayment !== 'card' }">✓</i>
           </div>
@@ -152,14 +152,14 @@
       <div class="remarks-section">
         <div class="section-header">
           <i class="remarks-icon">📝</i>
-          <h3 class="section-title">订单备注</h3>
+          <h3 class="section-title">Order Notes</h3>
         </div>
         
         <div class="remarks-input-container">
           <input 
             type="text" 
             class="remarks-input" 
-            placeholder="可以填写您的特殊需求（选填）" 
+            placeholder="You can fill in your special requirements (optional)" 
             v-model="remarks"
           />
         </div>
@@ -169,15 +169,15 @@
     <!-- 底部结算栏 -->
     <div class="checkout-bar">
       <div class="price-info">
-        <div class="total-price">合计: <span class="price-value">¥{{ cartStore.totalPrice.toFixed(2) }}</span></div>
-        <div class="discount-info" v-if="totalDiscount > 0">已优惠: ¥{{ totalDiscount.toFixed(2) }}</div>
+        <div class="total-price">Total: <span class="price-value">¥{{ cartStore.totalPrice.toFixed(2) }}</span></div>
+        <div class="discount-info" v-if="totalDiscount > 0">Discounted: ¥{{ totalDiscount.toFixed(2) }}</div>
       </div>
       <button 
         class="checkout-btn" 
         @click="submitOrder"
         :class="{ 'disabled': cartStore.items.length === 0 }"
       >
-        提交订单
+        Place Order
       </button>
     </div>
     
@@ -185,10 +185,10 @@
     <div class="payment-success-modal" v-if="paymentSuccess">
       <div class="modal-content">
         <div class="success-icon">✓</div>
-        <h2 class="success-title">支付成功</h2>
-        <p class="success-message">您的订单已提交，请凭订单号到店取餐</p>
-        <div class="order-number">订单号: {{ orderNumber }}</div>
-        <button class="close-btn" @click="closeSuccessModal">确定</button>
+        <h2 class="success-title">Payment Successful</h2>
+        <p class="success-message">Your order has been submitted, please pick up your order with the order number</p>
+        <div class="order-number">Order Number: {{ orderNumber }}</div>
+        <button class="close-btn" @click="closeSuccessModal">Confirm</button>
       </div>
     </div>
   </div>
@@ -230,7 +230,7 @@ function setPaymentMethod(method) {
 // 提交订单
 function submitOrder() {
   if (cartStore.items.length === 0) {
-    alert('购物车为空，请先添加商品');
+    alert('Cart is empty, please add items first');
     return;
   }
   
@@ -265,7 +265,7 @@ onMounted(() => {
   if (cartStore.items.length === 0) {
     // 如果购物车为空，显示提示并返回菜单页
     setTimeout(() => {
-      alert('购物车为空，请先添加商品');
+      alert('Cart is empty, please add items first');
       router.push({ name: 'Menu' });
     }, 100);
   }
@@ -297,10 +297,46 @@ function formatProductOptions(options) {
   if (!options) return '';
   
   const optionValues = [];
-  if (options.size) optionValues.push(options.size);
-  if (options.temp) optionValues.push(options.temp);
-  if (options.sugar) optionValues.push(options.sugar);
-  if (options.milk) optionValues.push(options.milk);
+  if (options.size) {
+    // 处理尺寸显示
+    if (options.size === 'Large 16oz') {
+      optionValues.push('Large 16oz');
+    } else {
+      optionValues.push(options.size);
+    }
+  }
+  
+  if (options.temp) {
+    // 处理温度显示
+    if (options.temp === 'Iced') {
+      optionValues.push('Iced');
+    } else if (options.temp === 'Hot') {
+      optionValues.push('Hot');
+    } else {
+      optionValues.push(options.temp);
+    }
+  }
+  
+  if (options.sugar) {
+    // 处理糖度显示
+    const sugarMap = {
+      'Standard': 'Standard',
+      'Less Sweet': 'Less Sweet',
+      'Slightly Sweet': 'Slightly Sweet',
+      'Lightly Sweet': 'Lightly Sweet',
+      'No Added Sugar': 'No Added Sugar'
+    };
+    optionValues.push(sugarMap[options.sugar] || options.sugar);
+  }
+  
+  if (options.milk) {
+    // 处理奶基显示
+    const milkMap = {
+      'Whole Milk': 'Whole Milk',
+      'Oat Milk': 'Oat Milk'
+    };
+    optionValues.push(milkMap[options.milk] || options.milk);
+  }
   
   if (options.extras && options.extras.length > 0) {
     optionValues.push(options.extras.join('/'));

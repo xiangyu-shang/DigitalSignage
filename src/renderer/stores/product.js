@@ -46,7 +46,7 @@ export const useProductStore = defineStore('product', () => {
       const data = await fetchCategories();
       categories.value = data;
     } catch (error) {
-      console.error('加载商品分类失败', error);
+      console.error('Failed to load categories', error);
     } finally {
       categoriesLoading.value = false;
     }
@@ -74,7 +74,7 @@ export const useProductStore = defineStore('product', () => {
       });
       products.value = data;
     } catch (error) {
-      console.error('加载商品列表失败', error);
+      console.error('Failed to load product list', error);
     } finally {
       productsLoading.value = false;
     }
@@ -92,7 +92,7 @@ export const useProductStore = defineStore('product', () => {
       const data = await fetchProductById(id);
       currentProduct.value = data;
     } catch (error) {
-      console.error(`加载商品详情失败: ID ${id}`, error);
+      console.error(`Failed to load product details: ID ${id}`, error);
     } finally {
       productLoading.value = false;
     }

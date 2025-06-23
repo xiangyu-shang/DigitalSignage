@@ -24,6 +24,10 @@ try {
   // 尝试从window全局变量中获取配置
   if (window.__APP_CONFIG__) {
     appConfig = window.__APP_CONFIG__;
+    // 确保调试信息始终关闭
+    if (appConfig.features) {
+      appConfig.features.showDebugInfo = false;
+    }
   } else {
     // 默认配置
     appConfig = {
@@ -120,8 +124,3 @@ app.mount('#app');
 
 // 应用图片监控，确保所有图片都能正确处理加载错误
 monitorAllImages();
-
-// 导出应用实例（便于调试）
-if (appConfig.features?.showDebugInfo) {
-  window.__APP_INSTANCE__ = app;
-} 

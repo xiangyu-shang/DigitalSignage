@@ -64,7 +64,7 @@ export async function fetchProducts(options = {}) {
     
     return filtered;
   } catch (error) {
-    console.error('获取商品列表失败', error);
+    console.error('Failed to fetch product list', error);
     return [];
   }
 }
@@ -82,7 +82,7 @@ export async function fetchProductById(id) {
     const product = mockProducts.find(p => p.id === id);
     
     if (!product) {
-      throw new Error(`商品不存在: ${id}`);
+      throw new Error(`Product does not exist: ${id}`);
     }
     
     // 返回商品详情（可能包含更多信息）
@@ -91,7 +91,7 @@ export async function fetchProductById(id) {
       relatedProducts: getRelatedProducts(product, 4),
     };
   } catch (error) {
-    console.error(`获取商品详情失败: ID ${id}`, error);
+    console.error(`Failed to get product details: ID ${id}`, error);
     return null;
   }
 }
@@ -107,7 +107,7 @@ export async function fetchCategories() {
   try {
     return mockCategories;
   } catch (error) {
-    console.error('获取分类列表失败', error);
+    console.error('Failed to fetch category list', error);
     return [];
   }
 }

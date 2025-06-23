@@ -6,7 +6,7 @@ import { soundManager } from '../utils/effects';
  * 购物车状态管理
  */
 export const useCartStore = defineStore('cart', () => {
-  // 购物车商品列表
+  // 购物车项目
   const items = ref([]);
   
   // 保存购物车数据到本地存储
@@ -28,31 +28,31 @@ export const useCartStore = defineStore('cart', () => {
   /**
    * 添加商品到购物车
    * @param {Object} product - 商品对象
-   * @param {string} product.id - 商品ID
-   * @param {string} product.name - 商品名称
-   * @param {number} product.price - 商品价格
-   * @param {string} product.image - 商品图片
-   * @param {Object} options - 商品选项，如颜色、尺寸等
-   * @param {number} quantity - 商品数量
+   * @param {Object} options - 商品选项
+   * @param {number} quantity - 数量
    */
   function addItem(product, options = {}, quantity = 1) {
-    // 检查商品是否已存在于购物车中，并且选项相同
-    const existingItemIndex = items.value.findIndex(item => 
-      item.product.id === product.id && 
-      JSON.stringify(item.options) === JSON.stringify(options)
-    );
+    // 判断是否已存在相同商品和选项
+    const existingIndex = items.value.findIndex(item => {
+      return (
+        item.product.id === product.id && 
+        item.options.size === options.size &&
+        item.options.temp === options.temp &&
+        item.options.sugar === options.sugar &&
+        item.options.milk === options.milk
+      );
+    });
     
-    if (existingItemIndex >= 0) {
-      // 如果已存在，则增加数量
-      items.value[existingItemIndex].quantity += quantity;
+    // 如果已存在，增加数量
+    if (existingIndex !== -1) {
+      items.value[existingIndex].quantity += quantity;
     } else {
-      // 如果不存在，则添加新商品
+      // 否则添加新项目
       items.value.push({
-        id: `${product.id}_${Date.now()}`, // 生成唯一ID
-        product,
-        options,
-        quantity,
-        addedAt: new Date().toISOString(),
+        id: Date.now().toString(), // 生成唯一ID
+        product: { ...product },
+        options: { ...options },
+        quantity
       });
     }
     
@@ -64,12 +64,12 @@ export const useCartStore = defineStore('cart', () => {
   }
   
   /**
-   * 从购物车移除商品
-   * @param {string} itemId - 购物车项ID
+   * 从购物车移除指定项目
+   * @param {string} itemId - 项目ID
    */
   function removeItem(itemId) {
     const index = items.value.findIndex(item => item.id === itemId);
-    if (index >= 0) {
+    if (index !== -1) {
       items.value.splice(index, 1);
       
       // 播放移除音效
@@ -81,14 +81,19 @@ export const useCartStore = defineStore('cart', () => {
   }
   
   /**
-   * 更新购物车中商品的数量
-   * @param {string} itemId - 购物车项ID
+   * 更新商品数量
+   * @param {string} itemId - 项目ID
    * @param {number} quantity - 新数量
    */
   function updateQuantity(itemId, quantity) {
     const item = items.value.find(item => item.id === itemId);
     if (item) {
-      item.quantity = Math.max(1, quantity); // 确保数量至少为1
+      if (quantity <= 0) {
+        // 如果数量小于等于0，移除该项目
+        removeItem(itemId);
+      } else {
+        item.quantity = quantity;
+      }
       
       // 保存购物车
       saveCart();
@@ -105,27 +110,49 @@ export const useCartStore = defineStore('cart', () => {
     saveCart();
   }
   
-  // 计算商品总数
+  /**
+   * 计算购物车中商品总数量
+   */
   const totalItems = computed(() => {
     return items.value.reduce((sum, item) => sum + item.quantity, 0);
   });
   
-  // 计算商品总价
+  /**
+   * 计算购物车总价
+   */
   const totalPrice = computed(() => {
-    return items.value.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    return items.value.reduce((sum, item) => {
+      let itemPrice = item.product.price;
+      
+      // 根据选项调整价格
+      if (item.options) {
+        // 如果选择燕麦奶，价格可能会有调整
+        if (item.options.milk === 'Oat Milk') {
+          itemPrice += 2; // 假设燕麦奶比纯牛奶贵2元
+        }
+        
+        // 其他可能的价格调整...
+      }
+      
+      return sum + (itemPrice * item.quantity);
+    }, 0);
   });
   
-  // 是否有商品
-  const hasItems = computed(() => items.value.length > 0);
+  /**
+   * 判断购物车是否有商品
+   */
+  const hasItems = computed(() => {
+    return items.value.length > 0;
+  });
   
   return {
     items,
-    totalItems,
-    totalPrice,
-    hasItems,
     addItem,
     removeItem,
     updateQuantity,
     clearCart,
+    totalItems,
+    totalPrice,
+    hasItems
   };
 }); 

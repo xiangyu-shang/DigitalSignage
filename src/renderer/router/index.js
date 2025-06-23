@@ -6,6 +6,14 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 const routes = [
   {
     path: '/',
+    name: 'Welcome',
+    component: () => import('../views/WelcomeView.vue'),
+    meta: {
+      title: '欢迎页'
+    }
+  },
+  {
+    path: '/menu',
     name: 'Menu',
     component: () => import('../views/MenuView.vue'),
     meta: {
