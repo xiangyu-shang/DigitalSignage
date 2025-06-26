@@ -18,6 +18,38 @@ import './assets/styles/main.css';
 // 在导入部分添加我们的图片监控函数
 import { monitorAllImages } from './assets/local-images';
 
+// 初始化Pinia
+const pinia = createPinia();
+
+// 预先导入主题存储以确保主题在应用启动时立即应用
+import { useThemeStore } from './stores/theme';
+
+// 添加CSS变量监控，帮助调试主题问题
+console.log('[main.js] 初始化CSS变量监控');
+
+// 记录初始CSS变量状态
+const root = document.documentElement;
+console.log('[main.js] 初始CSS变量:', {
+  primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+  background: getComputedStyle(root).getPropertyValue('--color-background')
+});
+
+// 创建一个MutationObserver来监视应用CSS变量的更改
+const cssVarObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+      console.log('[main.js] 检测到style属性变化');
+      console.log('[main.js] 当前CSS变量:', {
+        primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+        background: getComputedStyle(root).getPropertyValue('--color-background')
+      });
+    }
+  });
+});
+
+// 配置观察器
+cssVarObserver.observe(root, { attributes: true });
+
 // 加载配置
 let appConfig = {};
 try {
@@ -27,6 +59,7 @@ try {
     // 确保调试信息始终关闭
     if (appConfig.features) {
       appConfig.features.showDebugInfo = false;
+      appConfig.features.enableAutoRefresh = false;
     }
   } else {
     // 默认配置
@@ -37,7 +70,7 @@ try {
         defaultLanguage: 'zh-CN'
       },
       features: {
-        enableAutoRefresh: true,
+        enableAutoRefresh: false,
         enableLogging: true,
         showDebugInfo: false
       }
@@ -78,23 +111,20 @@ function logError(type, error) {
       logs.splice(0, logs.length - 100);
     }
     localStorage.setItem('app_error_logs', JSON.stringify(logs));
-    
-    // 如果启用了调试模式，显示在控制台
-    if (appConfig.features?.showDebugInfo) {
-      console.table(errorData);
-    }
   } catch (e) {
     console.error('记录错误日志失败:', e);
   }
 }
 
 // 创建Vue应用
-const pinia = createPinia();
 const app = createApp(App);
 
 // 使用插件
 app.use(pinia);
 app.use(router);
+
+// 确保主题在应用启动时立即初始化
+const themeStore = useThemeStore();
 
 // 修复中文模板处理
 app.config.compilerOptions = {
@@ -110,14 +140,6 @@ app.config.errorHandler = (err, vm, info) => {
 
 // 设置页面标题
 document.title = appConfig.display?.defaultTitle || '咖啡及饮品商品展示系统';
-
-// 自动刷新功能
-if (appConfig.features?.enableAutoRefresh && appConfig.display?.refreshInterval > 0) {
-  setInterval(() => {
-    console.log('页面自动刷新');
-    window.location.reload();
-  }, appConfig.display.refreshInterval);
-}
 
 // 挂载应用
 app.mount('#app');

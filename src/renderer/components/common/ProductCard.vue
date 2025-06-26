@@ -80,7 +80,7 @@ function addToCart(event) {
 
 <style scoped>
 .product-card {
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-radius: var(--border-radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -98,7 +98,7 @@ function addToCart(event) {
   width: 100%;
   padding-bottom: 100%; /* 1:1 长宽比 */
   overflow: hidden;
-  background-color: #f5f5f5;
+  background-color: var(--color-backgroundDark, #f5f5f5);
 }
 
 .product-image {
@@ -140,6 +140,7 @@ function addToCart(event) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--color-textPrimary, #333);
 }
 
 .product-price {
@@ -155,7 +156,7 @@ function addToCart(event) {
 }
 
 .price-prefix {
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   font-size: var(--font-size-small);
   margin-right: 2px;
 }
@@ -163,11 +164,11 @@ function addToCart(event) {
 .current-price {
   font-size: var(--font-size-medium);
   font-weight: bold;
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
 }
 
 .price-suffix {
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   font-size: var(--font-size-small);
   margin-left: 4px;
 }
@@ -179,7 +180,7 @@ function addToCart(event) {
 
 .original-price {
   font-size: var(--font-size-small);
-  color: #999;
+  color: var(--color-textLight, #999);
   text-decoration: line-through;
 }
 
@@ -205,7 +206,7 @@ function addToCart(event) {
 
 .reviews {
   font-size: var(--font-size-small);
-  color: var(--color-text-light);
+  color: var(--color-textTertiary, #999);
 }
 
 .add-to-cart-container {
@@ -218,7 +219,7 @@ function addToCart(event) {
   width: 28px; /* 按钮宽度 */
   height: 28px; /* 按钮高度 */
   border-radius: 50%; /* 圆形边框 */
-  background-color: rgb(0,33,170); /* 背景色-深蓝色(RGB 0,33,170) */
+  background-color: var(--color-blueButton, rgb(0,33,170)); /* 使用变量代替固定色值 */
   border: none; /* 无边框 */
   color: white; /* 文字颜色-白色 */
   display: flex; /* 弹性布局 */

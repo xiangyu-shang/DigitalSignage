@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
   overflow: hidden;
@@ -466,7 +466,7 @@ onBeforeUnmount(() => {
   height: calc(400 * var(--vw-unit));
   position: relative;
   overflow: hidden;
-  background-color: #f5f5f5;
+  background-color: var(--color-backgroundDark, #f5f5f5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -487,7 +487,7 @@ onBeforeUnmount(() => {
   position: absolute;
   top: calc(20 * var(--vw-unit));
   left: calc(20 * var(--vw-unit));
-  background-color: rgb(0, 33, 170);
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
   color: white;
   font-size: calc(12 * var(--vw-unit));
   padding: calc(4 * var(--vw-unit)) calc(10 * var(--vw-unit));
@@ -497,14 +497,14 @@ onBeforeUnmount(() => {
 
 .product-image-text {
   font-size: calc(24 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
   text-align: center;
   max-width: 80%;
 }
 
 /* 商品信息卡片 */
 .product-info-card {
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-radius: calc(24 * var(--vw-unit)) calc(24 * var(--vw-unit)) 0 0;
   padding: calc(24 * var(--vw-unit)) calc(16 * var(--vw-unit)) calc(80 * var(--vw-unit));
   position: relative;
@@ -512,9 +512,11 @@ onBeforeUnmount(() => {
   flex: 1;
   overflow-y: auto;
   max-height: calc(100vh - 350 * var(--vw-unit)); /* 调整最大高度 */
-  box-shadow: 0 calc(-10 * var(--vw-unit)) calc(20 * var(--vw-unit)) rgba(0, 0, 0, 0.1);
+  box-shadow: 0 calc(-10 * var(--vw-unit)) calc(20 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.1)); /* 响应主题的阴影 */
   -webkit-overflow-scrolling: touch; /* 增加iOS滚动惯性 */
   z-index: 10;
+  border-top: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .product-header {
@@ -526,11 +528,12 @@ onBeforeUnmount(() => {
   font-weight: bold;
   margin: 0 0 calc(8 * var(--vw-unit));
   line-height: 1.3;
+  color: var(--color-textPrimary, #333);
 }
 
 .product-desc {
   font-size: calc(14 * var(--vw-unit));
-  color: #666;
+  color: var(--color-textSecondary, #666);
   margin: 0;
   line-height: 1.6;
 }
@@ -544,28 +547,27 @@ onBeforeUnmount(() => {
 }
 
 .current-price {
-  font-size: calc(28 * var(--vw-unit));
+  font-size: calc(24 * var(--vw-unit));
   font-weight: bold;
-  color: #ff5000;
-  margin-right: calc(12 * var(--vw-unit));
+  color: var(--color-priceColor, #ff5000);
 }
 
 .price-tag {
-  padding: calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit));
-  background-color: #fff0e8;
-  color: #ff5000;
-  border: var(--border-width) solid #ffe0cc;
+  display: inline-block;
+  padding: calc(4 * var(--vw-unit)) calc(8 * var(--vw-unit));
+  background-color: var(--color-priceTagBackground, #fff0e8);
+  color: var(--color-priceColor, #ff5000);
+  font-size: calc(14 * var(--vw-unit));
   border-radius: calc(4 * var(--vw-unit));
-  font-size: calc(12 * var(--vw-unit));
-  margin-right: calc(8 * var(--vw-unit));
+  margin-left: calc(8 * var(--vw-unit));
+  border: var(--border-width) solid var(--color-priceBorder, #ffe0cc);
 }
 
 .original-price {
-  font-size: calc(14 * var(--vw-unit));
-  color: #999;
+  font-size: calc(16 * var(--vw-unit));
   text-decoration: line-through;
-  margin-top: calc(4 * var(--vw-unit));
-  flex-basis: 100%;
+  color: #999;
+  margin-left: calc(8 * var(--vw-unit));
 }
 
 /* 规格选择区 */
@@ -582,7 +584,7 @@ onBeforeUnmount(() => {
   width: calc(70 * var(--vw-unit));
   font-size: calc(16 * var(--vw-unit));
   font-weight: 500;
-  color: #333;
+  color: var(--color-textTertiary, #333); /* 修改为使用主题变量，默认颜色更亮 */
   padding-top: calc(10 * var(--vw-unit));
   margin-right: calc(15 * var(--vw-unit));
 }
@@ -598,7 +600,7 @@ onBeforeUnmount(() => {
   flex: 0 0 calc((100% - 20 * var(--vw-unit)) / 3);
   padding: calc(10 * var(--vw-unit)) calc(5 * var(--vw-unit));
   font-size: calc(15 * var(--vw-unit));
-  background-color: rgb(247, 247, 247);
+  background-color: var(--color-backgroundDark, rgb(247, 247, 247));
   border-radius: calc(8 * var(--vw-unit));
   cursor: pointer;
   text-align: center;
@@ -625,45 +627,45 @@ onBeforeUnmount(() => {
 
 .option-value.active {
   background-color: rgb(235, 238, 255);
-  color: rgb(0, 33, 170);
+  color: var(--color-blueButton, rgb(0, 33, 170));
 }
 
 .section-title {
   font-size: calc(16 * var(--vw-unit));
   font-weight: bold;
   margin: calc(16 * var(--vw-unit)) 0 calc(12 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 /* 商品详情区 */
 .product-details {
   margin-top: calc(24 * var(--vw-unit));
   padding-top: calc(16 * var(--vw-unit));
-  border-top: var(--border-width) solid #f0f0f0;
+  border-top: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
 }
 
 .detail-row {
   display: flex;
   justify-content: space-between;
-  padding: calc(8 * var(--vw-unit)) 0;
+  padding: calc(20 * var(--vw-unit));
   font-size: calc(14 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f8f8f8;
+  border-bottom: var(--border-width) solid var(--color-border, #f8f8f8); /* 使用主题变量，适应深色模式 */
 }
 
 .detail-label {
-  color: #666;
+  color: var(--color-textTertiary, #666);
 }
 
 .detail-value {
-  color: #333;
+  color: var(--color-textSecondary, #333);
   font-weight: 500;
 }
 
 .detail-notes {
   margin-top: calc(16 * var(--vw-unit));
   font-size: calc(12 * var(--vw-unit));
-  color: #999;
-  line-height: 1.6;
+  color: var(--color-textLight, #999);
+  line-height: 3;
 }
 
 /* 底部购买栏 */
@@ -672,15 +674,17 @@ onBeforeUnmount(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: white;
+  background-color: var(--color-backgroundDark, white);
   padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) rgba(0, 0, 0, 0.05);
+  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) 
+              var(--color-backgroundAlt, rgba(0, 0, 0, 0.05)); /* 响应主题的阴影 */
   z-index: 10;
   height: calc(70 * var(--vw-unit));
   box-sizing: border-box;
+  border-top: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .total-amount {
@@ -696,7 +700,7 @@ onBeforeUnmount(() => {
 .amount-value {
   font-size: calc(20 * var(--vw-unit));
   font-weight: bold;
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
 }
 
 .action-buttons {
@@ -705,7 +709,7 @@ onBeforeUnmount(() => {
 }
 
 .cart-btn, .buy-btn {
-  padding: calc(10 * var(--vw-unit)) calc(20 * var(--vw-unit));
+  padding: calc(10 * var(--vw-unit)) calc(16 * var(--vw-unit));
   border-radius: calc(22 * var(--vw-unit));
   font-size: calc(15 * var(--vw-unit));
   font-weight: bold;
@@ -714,12 +718,12 @@ onBeforeUnmount(() => {
 }
 
 .cart-btn {
-  background-color: rgba(0, 33, 170, 0.1);
-  color: rgb(0, 33, 170);
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-blueButton, rgb(0, 33, 170));
 }
 
 .buy-btn {
-  background-color: rgb(0, 33, 170);
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
   color: white;
 }
 
@@ -730,13 +734,14 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  color: var(--color-textPrimary, #333);
 }
 
 .loading-spinner {
   width: calc(40 * var(--vw-unit));
   height: calc(40 * var(--vw-unit));
-  border: calc(4 * var(--vw-unit)) solid #f3f3f3;
-  border-top: calc(4 * var(--vw-unit)) solid rgb(0, 33, 170);
+  border: calc(4 * var(--vw-unit)) solid var(--color-backgroundDark, #f3f3f3);
+  border-top: calc(4 * var(--vw-unit)) solid var(--color-blueButton, rgb(0, 33, 170));
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -773,6 +778,7 @@ onBeforeUnmount(() => {
 
 .cup-option.active {
   background-color: rgb(235, 238, 255);
+  color: var(--color-blueButton, rgb(0, 33, 170));
 }
 
 .cup-icon-container {
@@ -794,11 +800,11 @@ onBeforeUnmount(() => {
 .cup-text {
   font-size: calc(15 * var(--vw-unit));
   margin-top: calc(4 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 .cup-option.active .cup-text {
-  color: rgb(0, 33, 170);
+  color: var(--color-blueButton, rgb(0, 33, 170));
 }
 
 .tag-right {

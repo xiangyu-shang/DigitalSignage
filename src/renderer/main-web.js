@@ -18,6 +18,11 @@ try {
   // 尝试从window全局变量中获取配置
   if (window.__APP_CONFIG__) {
     appConfig = window.__APP_CONFIG__;
+    // 确保调试信息始终关闭
+    if (appConfig.features) {
+      appConfig.features.showDebugInfo = false;
+      appConfig.features.enableAutoRefresh = false;
+    }
   } else {
     // 默认配置
     appConfig = {
@@ -27,7 +32,7 @@ try {
         defaultLanguage: 'zh-CN'
       },
       features: {
-        enableAutoRefresh: true,
+        enableAutoRefresh: false,
         enableLogging: true,
         showDebugInfo: false
       }
@@ -68,11 +73,6 @@ function logError(type, error) {
       logs.splice(0, logs.length - 100);
     }
     localStorage.setItem('app_error_logs', JSON.stringify(logs));
-    
-    // 如果启用了调试模式，显示在控制台
-    if (appConfig.features?.showDebugInfo) {
-      console.table(errorData);
-    }
   } catch (e) {
     console.error('记录错误日志失败:', e);
   }
@@ -101,18 +101,5 @@ app.config.errorHandler = (err, vm, info) => {
 // 设置页面标题
 document.title = appConfig.display?.defaultTitle || '咖啡及饮品商品展示系统';
 
-// 自动刷新功能
-if (appConfig.features?.enableAutoRefresh && appConfig.display?.refreshInterval > 0) {
-  setInterval(() => {
-    console.log('页面自动刷新');
-    window.location.reload();
-  }, appConfig.display.refreshInterval);
-}
-
 // 挂载应用
-app.mount('#app');
-
-// 导出应用实例（便于调试）
-if (appConfig.features?.showDebugInfo) {
-  window.__APP_INSTANCE__ = app;
-} 
+app.mount('#app'); 

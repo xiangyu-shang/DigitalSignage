@@ -7,6 +7,9 @@
       </div>
       
       <div class="header-right">
+        <!-- 主题切换按钮 -->
+        <theme-toggle />
+        
         <!-- 购物车按钮 -->
         <cart-button />
         
@@ -73,6 +76,7 @@ import { useRouter } from 'vue-router';
 import { useSettingsStore } from '@/stores/settings';
 import { soundManager } from '@/utils/effects';
 import CartButton from '@/components/common/CartButton.vue';
+import ThemeToggle from '@/components/common/ThemeToggle.vue';
 
 const router = useRouter();
 const settingsStore = useSettingsStore();

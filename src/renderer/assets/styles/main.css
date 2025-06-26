@@ -4,14 +4,24 @@
 
 /* 基础变量定义 */
 :root {
-  /* 主题色 */
-  --color-primary: #2C3E50;
-  --color-secondary: #3498DB;
-  --color-accent: #E74C3C;
-  --color-background: #ECF0F1;
-  --color-text: #333333;
-  --color-text-light: #7F8C8D;
-  --color-border: #BDC3C7;
+  /* 主题色变量 */
+  --color-primary: #003cc8;       /* 蓝色常规 */
+  --color-primaryDark: #003399;   /* 深蓝色点击 */
+  --color-warning: #fec700;       /* 黄色提示色 */
+  --color-error: #f73d3e;         /* 红色错误提示色 */
+  --color-background: #fafafa;    /* 浅色背景 */
+  --color-backgroundAlt: #ffffff; /* 白色背景 */
+  --color-textPrimary: #1d212a;   /* 标题文字 */
+  --color-textSecondary: #343942; /* 正文文字 */
+  --color-textTertiary: #76797c;  /* 辅助文字 */
+  --color-textLight: #b6b6b7;     /* 提示文字 */
+  
+  /* 兼容旧版变量名称 */
+  --color-secondary: var(--color-primaryDark);
+  --color-accent: var(--color-error);
+  --color-text: var(--color-textSecondary);
+  --color-text-light: var(--color-textTertiary);
+  --color-border: #e0e0e0;
   
   /* 基准尺寸 - 基于540:960的设计稿 */
   --base-width: 540px;

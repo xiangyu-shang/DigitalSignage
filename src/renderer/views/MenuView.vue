@@ -4,8 +4,16 @@
     <div class="nav-bar">
       <!-- 自提/外送切换 -->
       <div class="delivery-toggle">
-        <button class="toggle-btn active">Pick&nbsp;Up</button>
-        <button class="toggle-btn">Delivery</button>
+        <button 
+          class="toggle-btn" 
+          :class="{ active: themeStore.currentThemeId === 'default' }"
+          @click="setTheme('default')"
+        >Pick&nbsp;Up</button>
+        <button 
+          class="toggle-btn" 
+          :class="{ active: themeStore.currentThemeId === 'alternate' }"
+          @click="setTheme('alternate')"
+        >Delivery</button>
       </div>
 
       <!-- 搜索框 -->
@@ -78,7 +86,7 @@
     </div>
 
     <!-- 门店信息 -->
-    <div class="store-info">
+    <!-- <div class="store-info">
       <div class="store-left">
         <svg class="location-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#666666"/>
@@ -96,13 +104,13 @@
           <span>Group Order</span>
         </button>
       </div>
-    </div>
+    </div> -->
 
     <!-- 优惠信息 -->
-    <div class="promotion-info">
+    <!-- <div class="promotion-info">
       <span class="price-tag">¥9.9</span>
       <span class="time-tag">9.9 Limited Time Offer</span>
-    </div>
+    </div> -->
 
     <!-- 主内容区 -->
     <div class="main-content">
@@ -210,7 +218,7 @@
     </div>
 
     <!-- 底部导航栏 -->
-    <div class="tab-bar">
+    <!-- <div class="tab-bar">
       <div class="tab-item">
         <i class="tab-icon home-icon"></i>
         <span>Home</span>
@@ -231,6 +239,11 @@
         <i class="tab-icon me-icon"></i>
         <span>Me</span>
       </div>
+    </div> -->
+
+    <!-- 添加动态SVG样式元素，用于主题切换时更新SVG颜色 -->
+    <div style="display:none">
+      <svg id="svgDefs"></svg>
     </div>
 
   </div>
@@ -240,6 +253,7 @@
 import { onMounted, ref, computed, onBeforeUnmount } from 'vue';
 import { useProductStore } from '@/stores/product';
 import { useCartStore } from '@/stores/cart';
+import { useThemeStore } from '@/stores/theme';
 import { useRouter } from 'vue-router';
 import { initEffects } from '@/utils/effects';
 import { getImageUrl, setupImageFallback, getImageLoadReport } from '../assets/local-images';
@@ -247,6 +261,7 @@ import { getImageUrl, setupImageFallback, getImageLoadReport } from '../assets/l
 // 获取商品store
 const productStore = useProductStore();
 const cartStore = useCartStore();
+const themeStore = useThemeStore();
 const router = useRouter();
 
 // 当前选中的分类ID
@@ -255,6 +270,10 @@ const currentCategoryId = ref(null);
 // 控制数字标牌系统面板的显示
 const isPanelClosed = ref(false);
 const isPanelForceOpen = ref(false);
+
+// 调试UI显示控制
+const showDebugUI = ref(true);
+const showThemeDebugPanel = ref(false);
 
 // 获取分类列表
 const categories = computed(() => productStore.categories);
@@ -357,6 +376,111 @@ function closeSignagePanel() {
   }, 300000); // 5分钟 = 300,000毫秒
 }
 
+// 设置主题
+function setTheme(themeId) {
+  console.log(`[MenuView] 设置主题: ${themeId}`);
+  themeStore.setTheme(themeId);
+  
+  // 延迟更新SVG元素的颜色
+  setTimeout(updateSvgColors, 100);
+}
+
+// 更新SVG元素的颜色
+function updateSvgColors() {
+  console.log('[MenuView] 更新SVG元素颜色');
+  
+  try {
+    // 获取当前主题ID
+    const currentThemeId = themeStore.currentThemeId;
+    console.log(`[MenuView] 当前主题: ${currentThemeId}`);
+
+    // 添加延迟，确保主题变量已经应用
+    setTimeout(() => {
+      // 1. 处理特定SVG路径元素
+      const svgPaths = {
+        // 蓝色系颜色
+        blue: {
+          fill: ['#0039ac', '#003cc8', '#003399'],
+          stroke: ['#0039ac', '#003cc8', '#003399']
+        },
+        // 橙色系颜色
+        orange: {
+          fill: ['#ff5000', '#cc4000', '#992f00'],
+          stroke: ['#ff5000', '#cc4000', '#992f00']
+        }
+      };
+      
+      // 获取当前主题对应的颜色变量
+      const root = document.documentElement;
+      const blueButtonColor = getComputedStyle(root).getPropertyValue('--color-blueButton').trim();
+      const blueButtonDarkColor = getComputedStyle(root).getPropertyValue('--color-blueButtonDark').trim();
+      
+      console.log(`[MenuView] 当前主题颜色变量: blueButton=${blueButtonColor}, blueButtonDark=${blueButtonDarkColor}`);
+      
+      // 处理填充颜色
+      const targetFillColors = currentThemeId === 'default' ? svgPaths.blue.fill : svgPaths.orange.fill;
+      targetFillColors.forEach(color => {
+        document.querySelectorAll(`svg path[fill="${color}"]`).forEach(path => {
+          path.classList.add('svg-blue-dark-fill');
+          console.log(`[MenuView] 添加填充类: ${color} -> svg-blue-dark-fill`);
+        });
+      });
+      
+      // 处理描边颜色
+      const targetStrokeColors = currentThemeId === 'default' ? svgPaths.blue.stroke : svgPaths.orange.stroke;
+      targetStrokeColors.forEach(color => {
+        document.querySelectorAll(`svg path[stroke="${color}"]`).forEach(path => {
+          path.classList.add('svg-blue-dark-stroke');
+          console.log(`[MenuView] 添加描边类: ${color} -> svg-blue-dark-stroke`);
+        });
+      });
+      
+      // 2. 强制刷新SVG过滤器
+      document.querySelectorAll('.svg-dynamic-color').forEach(el => {
+        el.classList.remove('svg-dynamic-color');
+        // 使用setTimeout确保DOM有时间处理这些变化
+        setTimeout(() => {
+          el.classList.add('svg-dynamic-color');
+          console.log('[MenuView] 刷新动态颜色元素');
+        }, 10);
+      });
+      
+      // 3. 更新购物车图标颜色 (使用background-image中的SVG)
+      const cartInfoElements = document.querySelectorAll('.cart-info::before');
+      if (cartInfoElements.length > 0) {
+        console.log('[MenuView] 更新购物车图标颜色');
+        // 购物车图标在使用了伪元素，可以通过更新CSS变量来控制其颜色
+      }
+      
+      console.log('[MenuView] SVG颜色更新完成');
+    }, 100); // 添加延迟确保主题变量已经应用
+  } catch (e) {
+    console.error('[MenuView] 更新SVG颜色时出错:', e);
+  }
+}
+
+// 切换主题调试面板
+function toggleThemeDebug() {
+  showThemeDebugPanel.value = !showThemeDebugPanel.value;
+  console.log(`[MenuView] 主题调试面板: ${showThemeDebugPanel.value ? '显示' : '隐藏'}`);
+  
+  // 显示当前主题所有CSS变量值
+  if (showThemeDebugPanel.value) {
+    const root = document.documentElement;
+    const cssVars = {
+      primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+      primaryDark: getComputedStyle(root).getPropertyValue('--color-primaryDark'),
+      blueButton: getComputedStyle(root).getPropertyValue('--color-blueButton'),
+      blueButtonDark: getComputedStyle(root).getPropertyValue('--color-blueButtonDark'),
+      warning: getComputedStyle(root).getPropertyValue('--color-warning'),
+      error: getComputedStyle(root).getPropertyValue('--color-error'),
+      background: getComputedStyle(root).getPropertyValue('--color-background'),
+      backgroundAlt: getComputedStyle(root).getPropertyValue('--color-backgroundAlt')
+    };
+    console.table(cssVars);
+  }
+}
+
 // 组件挂载时
 onMounted(() => {
   // 确保特效初始化
@@ -366,10 +490,23 @@ onMounted(() => {
   productStore.loadCategories();
   productStore.loadProducts();
   
+  // 同步自提/外送按钮状态与当前主题
+  console.log('[MenuView] 初始主题:', themeStore.currentThemeId);
+  
+  // 初始化SVG颜色
+  setTimeout(updateSvgColors, 500);
+  
   // 打印诊断信息
   setTimeout(() => {
     console.log('[MenuView] Image loading status report:', getImageLoadReport());
-  }, 3000);
+    // 检查CSS变量是否正确应用
+    const root = document.documentElement;
+    console.log('[MenuView] CSS变量检查:', {
+      primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+      blueButton: getComputedStyle(root).getPropertyValue('--color-blueButton'),
+      background: getComputedStyle(root).getPropertyValue('--color-background')
+    });
+  }, 1000);
 });
 
 // 组件卸载前
@@ -431,19 +568,411 @@ function getTextLengthClass(text) {
   }
   return 'short';
 }
+
+// 显示支付成功浮层
+function showPaymentSuccess() {
+  // 这里可以添加显示支付成功浮层的逻辑
+  console.log('Payment successful!');
+}
+
+// 关闭支付成功浮层
+function closePaymentSuccess() {
+  // 这里可以添加关闭支付成功浮层的逻辑
+  console.log('Payment success modal closed');
+}
 </script>
 
 <style scoped>
 .menu-view {
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100vh;
-  background-color: #f5f5f5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  color: #333;
+  background-color: var(--color-background, #f5f5f5);
   position: relative;
-  overflow-x: hidden; /* 防止横向滚动 */
+  overflow: hidden;
+}
+
+/* 内容区域 */
+.content-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 左侧分类栏 */
+.category-sidebar {
+  width: calc(100 * var(--vw-unit));
+  background-color: var(--color-background, #f5f5f5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(100 * var(--vw-unit));
+  z-index: 2;
+}
+
+.category-item {
+  padding: calc(15 * var(--vw-unit)) calc(12 * var(--vw-unit));
+  font-size: calc(14 * var(--vw-unit));
+  text-align: center;
+  position: relative;
+  white-space: normal;
+  word-wrap: break-word;
+  color: var(--color-textSecondary, #ffffff);
+  cursor: pointer;
+  box-sizing: border-box;
+  height: calc(70 * var(--vw-unit));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-item.active {
+  color: var(--color-blueButton, rgb(0, 46, 184)); /* 使用蓝色按钮变量 */
+  background: linear-gradient(to right, var(--color-backgroundDark, #e9e9e9) 0%, var(--color-background, #f5f5f5) 100%);
+  border-left: none;
+  position: relative;
+  height: calc(56 * var(--vw-unit)); /* 减小选中时的高度 */
+}
+
+/* 商品列表区域 */
+.products-area {
+  flex: 1;
+  background-color: var(--color-backgroundAlt, white);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(100 * var(--vw-unit));
+  position: relative;
+  z-index: 1;
+}
+
+/* 分类标题 */
+.category-title {
+  padding: calc(16 * var(--vw-unit)) calc(16 * var(--vw-unit)) calc(8 * var(--vw-unit));
+  font-size: calc(18 * var(--vw-unit));
+  font-weight: bold;
+  color: var(--color-textPrimary, #333);
+  position: sticky;
+  top: 0;
+  background-color: var(--color-backgroundAlt, white);
+  z-index: 2;
+}
+
+/* 商品网格 */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: calc(12 * var(--vw-unit));
+  padding: 0 calc(12 * var(--vw-unit)) calc(12 * var(--vw-unit));
+}
+
+/* 商品卡片 */
+.product-card {
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit));
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: calc(240 * var(--vw-unit));
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 calc(1 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 0, 0, 0.04);
+}
+
+/* 商品图片区域 */
+.product-image-container {
+  height: calc(150 * var(--vw-unit));
+  overflow: hidden;
+  position: relative;
+  background-color: var(--color-backgroundDark, #f8f8f8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+/* 商品信息区域 */
+.product-info {
+  padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  font-size: calc(15 * var(--vw-unit));
+  font-weight: 600;
+  color: var(--color-textPrimary, #333);
+  margin: 0 0 calc(4 * var(--vw-unit));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-desc {
+  font-size: calc(12 * var(--vw-unit));
+  color: var(--color-textTertiary, #666);
+  margin: 0 0 calc(8 * var(--vw-unit));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  height: calc(32 * var(--vw-unit));
+}
+
+/* 商品价格行 */
+.product-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.product-price {
+  color: var(--color-priceColor, #ff5000);
+  font-size: calc(16 * var(--vw-unit));
+  font-weight: bold;
+}
+
+.price-label {
+  font-size: calc(14 * var(--vw-unit));
+}
+
+.product-original-price {
+  font-size: calc(12 * var(--vw-unit));
+  color: var(--color-textLight, #999);
+  text-decoration: line-through;
+  margin-left: calc(4 * var(--vw-unit));
+}
+
+/* 加入购物车按钮 */
+.add-to-cart {
+  width: calc(28 * var(--vw-unit));
+  height: calc(28 * var(--vw-unit));
+  border-radius: 50%;
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 0, 0, 0.1);
+}
+
+/* 底部导航栏 */
+.bottom-nav {
+  height: calc(60 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) rgba(0, 0, 0, 0.05);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 calc(16 * var(--vw-unit));
+  z-index: 10;
+}
+
+.order-type-toggle {
+  display: flex;
+  background-color: var(--color-backgroundDark, #f5f5f5);
+  border-radius: calc(20 * var(--vw-unit));
+  overflow: hidden;
+}
+
+.order-type-btn {
+  padding: calc(6 * var(--vw-unit)) calc(16 * var(--vw-unit));
+  font-size: calc(14 * var(--vw-unit));
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-textSecondary, #666);
+  position: relative;
+}
+
+.order-type-btn.active {
+  color: white;
+  font-weight: 600;
+}
+
+.pickup-btn.active {
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
+}
+
+.delivery-btn.active {
+  background-color: var(--color-primary, #ff5000);
+}
+
+/* 商品详情抽屉 */
+.product-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80vh;
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(24 * var(--vw-unit)) calc(24 * var(--vw-unit)) 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 calc(-10 * var(--vw-unit)) calc(30 * var(--vw-unit)) rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-drawer.open {
+  transform: translateY(0);
+}
+
+.drawer-header {
+  padding: calc(16 * var(--vw-unit));
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.drawer-title {
+  font-size: calc(18 * var(--vw-unit));
+  font-weight: bold;
+  color: var(--color-textPrimary, #333);
+  margin: 0;
+}
+
+.close-drawer {
+  width: calc(24 * var(--vw-unit));
+  height: calc(24 * var(--vw-unit));
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.close-drawer::before,
+.close-drawer::after {
+  content: '';
+  position: absolute;
+  width: calc(16 * var(--vw-unit));
+  height: calc(2 * var(--vw-unit));
+  background-color: var(--color-textSecondary, #666);
+  top: 50%;
+  left: 50%;
+}
+
+.close-drawer::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-drawer::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(16 * var(--vw-unit));
+  -webkit-overflow-scrolling: touch;
+}
+
+.drawer-footer {
+  padding: calc(16 * var(--vw-unit));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: var(--border-width) solid var(--color-border, #f0f0f0);
+}
+
+.price-total {
+  color: var(--color-priceColor, #ff5000);
+  font-size: calc(20 * var(--vw-unit));
+  font-weight: bold;
+}
+
+.add-to-cart-btn {
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
+  color: white;
+  border: none;
+  border-radius: calc(22 * var(--vw-unit));
+  padding: calc(12 * var(--vw-unit)) calc(24 * var(--vw-unit));
+  font-size: calc(16 * var(--vw-unit));
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 遮罩层 */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 99;
+}
+
+.drawer-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 空商品状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(200 * var(--vw-unit));
+  color: var(--color-textLight, #999);
+}
+
+.empty-icon {
+  font-size: calc(48 * var(--vw-unit));
+  margin-bottom: calc(16 * var(--vw-unit));
+}
+
+.empty-text {
+  font-size: calc(14 * var(--vw-unit));
+}
+
+/* New标签 */
+.new-tag {
+  position: absolute;
+  top: calc(10 * var(--vw-unit));
+  left: calc(10 * var(--vw-unit));
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
+  color: white;
+  font-size: calc(10 * var(--vw-unit));
+  padding: calc(2 * var(--vw-unit)) calc(6 * var(--vw-unit));
+  border-radius: calc(3 * var(--vw-unit));
+  z-index: 2;
 }
 
 /* 导航栏 */
@@ -452,11 +981,25 @@ function getTextLengthClass(text) {
   align-items: center;
   justify-content: space-between;
   padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit)); /* 减少水平内边距 */
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-bottom: none;
   height: calc(48 * var(--vw-unit));
   box-sizing: border-box;
   gap: calc(8 * var(--vw-unit)); /* 减少元素之间的间距 */
+}
+
+/* 调试主题按钮 */
+.debug-theme-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 0 0 0 4px;
+  cursor: pointer;
+  z-index: 1000;
 }
 
 .delivery-toggle {
@@ -474,7 +1017,7 @@ function getTextLengthClass(text) {
 .toggle-btn {
   padding: 0 calc(14 * var(--vw-unit)); /* 增加内边距 */
   border: none;
-  background-color: rgb(246,246,246);
+  background-color: rgba(255, 255, 255, 0.7);
   font-size: calc(13 * var(--vw-unit));
   cursor: pointer;
   height: 100%;
@@ -496,7 +1039,7 @@ function getTextLengthClass(text) {
 }
 
 .toggle-btn.active {
-  background-color: rgb(0, 46, 184);
+  background-color: var(--color-primary, rgb(0, 46, 184));
   color: white;
   font-weight: 500;
   letter-spacing: calc(0.2 * var(--vw-unit)); /* 增加字母间距提高可读性 */
@@ -521,11 +1064,13 @@ function getTextLengthClass(text) {
   align-items: center;
   margin-left: calc(5 * var(--vw-unit)); /* 减少左侧外边距 */
   flex-shrink: 0;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color:  rgba(255, 255, 255, 0.7);
+  /* background-color: var(--color-backgroundAlt, rgba(255, 255, 255, 0.7)); */
   border-radius: calc(22 * var(--vw-unit));
   padding: calc(3 * var(--vw-unit)) calc(6 * var(--vw-unit)); /* 减少内边距 */
-  border: var(--border-width) solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) rgba(0, 0, 0, 0.03);
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05));
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.03)); /* 响应主题的阴影 */
   width: auto;
   min-width: calc(95 * var(--vw-unit)); /* 减少最小宽度 */
   height: var(--button-height-sm); /* 明确设置高度 */
@@ -535,7 +1080,7 @@ function getTextLengthClass(text) {
 .button-divider {
   width: var(--border-width);
   height: calc(20 * var(--vw-unit));
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-border, rgba(0, 0, 0, 0.1)); /* 使用主题变量，适应深色模式 */
   margin: 0 calc(3 * var(--vw-unit)); /* 减少分隔线两侧的间距 */
   flex-shrink: 0;
 }
@@ -554,7 +1099,7 @@ function getTextLengthClass(text) {
 }
 
 .more-btn:hover, .scan-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-backgroundDark, rgba(0, 0, 0, 0.05));
 }
 
 .scan-btn {
@@ -572,11 +1117,13 @@ function getTextLengthClass(text) {
   margin: 0 calc(5 * var(--vw-unit)); /* 减少左右外边距 */
   display: flex;
   align-items: center;
-  background-color: rgb(246,246,246);
+  background-color: var(--color-backgroundDark, rgb(246,246,246));
   border-radius: calc(22 * var(--vw-unit));
   padding: 0 calc(12 * var(--vw-unit));
   height: var(--button-height-sm);
-  border: var(--border-width) solid rgba(0, 0, 0, 0.05);
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05));
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.03)); /* 响应主题的阴影 */
   box-sizing: border-box;
 }
 
@@ -605,7 +1152,7 @@ function getTextLengthClass(text) {
   justify-content: space-between;
   align-items: center;
   padding: calc(16 * var(--vw-unit)) calc(16 * var(--vw-unit)); /* 使用vw单位 */
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-bottom: none;
   height: calc(56 * var(--vw-unit));
   box-sizing: border-box;
@@ -637,32 +1184,33 @@ function getTextLengthClass(text) {
   content: ">";
   margin-left: calc(6 * var(--vw-unit)); /* 使用vw单位 */
   font-size: calc(12 * var(--vw-unit)); /* 使用vw单位 */
-  color: #999;
+  color: var(--color-textLight, #999);
   font-weight: 300; /* 减轻箭头粗细 */
 }
 
 .order-btn {
   display: flex;
   align-items: center;
-  background-color: #f8f8f8;
-  border: var(--border-width) solid #e0e0e0;
+  background-color: var(--color-backgroundDark, #f8f8f8);
+  border: var(--border-width) solid var(--color-border, #e0e0e0);
   border-radius: calc(20 * var(--vw-unit)); /* 使用vw单位 */
   padding: calc(7 * var(--vw-unit)) calc(16 * var(--vw-unit)); /* 使用vw单位 */
   font-size: calc(14 * var(--vw-unit)); /* 使用vw单位 */
   font-weight: 500;
-  color: #333;
-  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) rgba(0,0,0,0.05); /* 使用vw单位 */
+  color: var(--color-textPrimary, #333);
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 响应主题的阴影 */
   transition: all 0.2s ease; /* 添加过渡效果 */
 }
 
 .order-btn:hover {
-  background-color: #f0f0f0;
-  border-color: #d0d0d0;
+  background-color: var(--color-backgroundDark, #f0f0f0);
+  border-color: var(--color-border, #d0d0d0);
 }
 
 .order-icon {
   margin-right: calc(6 * var(--vw-unit)); /* 使用vw单位 */
-  color: #0039ac; /* 蓝色图标 */
+  color: var(--color-blueButtonDark, #003399); /* 使用深蓝色按钮变量 */
   position: relative;
   top: calc(-1 * var(--vw-unit)); /* 使用vw单位 */
   width: calc(18 * var(--vw-unit)); /* 使用vw单位 */
@@ -675,23 +1223,23 @@ function getTextLengthClass(text) {
   align-items: center;
   padding: calc(8 * var(--vw-unit)) calc(16 * var(--vw-unit)); /* 使用vw单位 */
   border-bottom: none; /* 移除分割线 */
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   height: calc(40 * var(--vw-unit));
   box-sizing: border-box;
 }
 
 .price-tag {
   font-size: calc(18 * var(--vw-unit)); /* 使用vw单位 */
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   font-weight: bold;
   margin-right: calc(12 * var(--vw-unit)); /* 使用vw单位 */
 }
 
 .time-tag {
   padding: calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)); /* 使用vw单位 */
-  background-color: #fff0e8;
-  color: #ff5000;
-  border: var(--border-width) solid #ffe0cc;
+  background-color: var(--color-priceTagBackground, #fff0e8);
+  color: var(--color-priceColor, #ff5000);
+  border: var(--border-width) solid var(--color-priceBorder, #ffe0cc);
   border-radius: calc(12 * var(--vw-unit)); /* 使用vw单位 */
   font-size: calc(12 * var(--vw-unit)); /* 使用vw单位 */
 }
@@ -702,13 +1250,14 @@ function getTextLengthClass(text) {
   display: flex;
   flex-direction: row; /* 确保是水平布局 */
   overflow: hidden;
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   width: 100%;
   position: relative;
   gap: calc(2 * var(--vw-unit));
   /* 计算高度：视口高度减去导航栏、商店信息、促销信息和底部导航栏的高度 */
   height: calc(100vh - calc(48 * var(--vw-unit)) - calc(56 * var(--vw-unit)) - calc(40 * var(--vw-unit)) - calc(56 * var(--vw-unit)));
-  margin-bottom: calc(56 * var(--vw-unit)); /* 为底部导航栏留出空间 */
+  /* argin-bottom: calc(56 * var(--vw-unit));*/ 
+  /* 为底部导航栏留出空间 */
 }
 
 /* 侧边分类菜单 */
@@ -716,7 +1265,7 @@ function getTextLengthClass(text) {
   width: 25%; /* 使用百分比宽度 */
   min-width: calc(60 * var(--vw-unit)); /* 设置最小宽度 */
   overflow-y: auto;
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   height: 100%; /* 填满主内容区 */
   box-sizing: border-box;
   display: flex;
@@ -735,7 +1284,7 @@ function getTextLengthClass(text) {
   padding: 0;
   margin: 0;
   list-style: none;
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   border-radius: 0;
   box-shadow: none;
   flex: 1;
@@ -763,8 +1312,8 @@ function getTextLengthClass(text) {
 }
 
 .category-item.active {
-  color: rgb(0, 46, 184);
-  background: linear-gradient(to right, #e9e9e9 0%, #f5f5f5 100%);
+  color: var(--color-blueButton, rgb(0, 46, 184)); /* 使用蓝色按钮变量 */
+  background: linear-gradient(to right, var(--color-backgroundDark, #e9e9e9) 0%, var(--color-background, #f5f5f5) 100%);
   border-left: none;
   position: relative;
   height: calc(56 * var(--vw-unit)); /* 减小选中时的高度 */
@@ -778,7 +1327,7 @@ function getTextLengthClass(text) {
   top: 12.5%;
   height: 75%;
   width: calc(6 * var(--vw-unit));
-  background-color: rgb(0, 46, 184);
+  background-color: var(--color-blueButton, rgb(0, 46, 184));
   border-radius: 0 50% 50% 0;
 }
 
@@ -799,7 +1348,7 @@ function getTextLengthClass(text) {
   width: 100%;
   height: 100%; /* 占满整个高度 */
   font-size: calc(12 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textTertiary, #666); /* 修改为使用主题变量，默认颜色更亮 */
   padding: 0 calc(4 * var(--vw-unit));
   box-sizing: border-box;
   text-align: center;
@@ -817,7 +1366,7 @@ function getTextLengthClass(text) {
 }
 
 .category-item.active span {
-  color: rgb(0, 46, 184);
+  color: var(--color-blueButton, rgb(0, 46, 184));
   font-weight: 500;
   font-size: calc(15 * var(--vw-unit)); /* 放大选中时的文字 */
 }
@@ -852,7 +1401,7 @@ function getTextLengthClass(text) {
   padding: calc(16 * var(--vw-unit)) calc(6 * var(--vw-unit)) 0 calc(2 * var(--vw-unit));
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   height: 100%; /* 填满主内容区 */
   box-sizing: border-box;
   
@@ -868,14 +1417,16 @@ function getTextLengthClass(text) {
 .product-list {
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-radius: calc(12 * var(--vw-unit)); /* 更柔和的圆角 */
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) rgba(0, 0, 0, 0.08); /* 更明显的阴影 */
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.08)); /* 响应主题的阴影 */
   padding: 0;
   margin: 0 calc(4 * var(--vw-unit)) calc(16 * var(--vw-unit)); /* 增加左右间距 */
   width: 98%; /* 确保不会导致横向滚动 */
   box-sizing: border-box;
   overflow: hidden; /* 确保内容不会溢出圆角边框 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .product-item:first-of-type {
@@ -885,7 +1436,7 @@ function getTextLengthClass(text) {
 .product-item {
   display: flex;
   position: relative;
-  border-top: var(--border-width) solid #f0f0f0; /* 改为上边框，更符合设计 */
+  border-top: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
   border-bottom: none; /* 移除底部边框 */
   padding: calc(14 * var(--vw-unit)) calc(12 * var(--vw-unit));
   margin-bottom: 0;
@@ -898,19 +1449,19 @@ function getTextLengthClass(text) {
   position: absolute;
   top: calc(14 * var(--vw-unit));
   left: calc(12 * var(--vw-unit));
-  background-color: rgb(0,33,170);
+  background-color: var(--color-newTag, var(--color-blueButton, rgb(0, 33, 170)));
   color: white;
   font-size: calc(10 * var(--vw-unit));
   padding: calc(2 * var(--vw-unit)) calc(6 * var(--vw-unit));
   border-radius: calc(4 * var(--vw-unit));
-  z-index: 2; /* 确保标签在图片上层 */
+  z-index: 50; /* 降低z-index值，确保小于结算栏的200 */
 }
 
 .product-img {
   width: calc(100 * var(--vw-unit));
   height: calc(100 * var(--vw-unit));
   border-radius: calc(8 * var(--vw-unit));
-  background-color: #f0f0f0;
+  background-color: var(--color-backgroundDark, #f0f0f0);
   background-size: cover;
   background-position: center;
   margin-right: calc(10 * var(--vw-unit));
@@ -918,7 +1469,7 @@ function getTextLengthClass(text) {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #333;
+  color: var(--color-textPrimary, #333);
   position: relative;
   overflow: hidden;
 }
@@ -968,18 +1519,18 @@ function getTextLengthClass(text) {
 
 .price-prefix {
   font-size: calc(14 * var(--vw-unit)); /* 固定字体大小 */
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
 }
 
 .price {
   font-size: calc(18 * var(--vw-unit)); /* 固定字体大小 */
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   font-weight: bold;
 }
 
 .price-suffix {
   font-size: calc(13 * var(--vw-unit)); /* 增大字体 */
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   margin-left: calc(4 * var(--vw-unit));
 }
 
@@ -1000,7 +1551,7 @@ function getTextLengthClass(text) {
   width: calc(28 * var(--vw-unit)); /* 按钮宽度 */
   height: calc(28 * var(--vw-unit)); /* 按钮高度 */
   border-radius: 50%; /* 圆形边框 */
-  background-color: rgb(0, 46, 184); /* 背景色-深蓝色 */
+  background-color: var(--color-blueButton, #003cc8); /* 使用蓝色按钮变量 */
   border: none; /* 无边框 */
   color: white; /* 文字颜色-白色 */
   position: relative; /* 相对定位 */
@@ -1009,7 +1560,8 @@ function getTextLengthClass(text) {
   align-items: center; /* 垂直居中 */
   justify-content: center; /* 水平居中 */
   padding: 0; /* 内边距为零 */
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 46, 184, 0.2); /* 阴影效果-深蓝色 */
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(4 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.2)); /* 响应主题的阴影 */
 }
 
 .plus-icon {
@@ -1050,7 +1602,7 @@ function getTextLengthClass(text) {
   font-weight: bold;
   padding: calc(16 * var(--vw-unit)) calc(10 * var(--vw-unit)) calc(12 * var(--vw-unit));
   margin: 0;
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-top-left-radius: calc(12 * var(--vw-unit)); /* 更柔和的圆角 */
   border-top-right-radius: calc(12 * var(--vw-unit)); /* 更柔和的圆角 */
 }
@@ -1061,18 +1613,20 @@ function getTextLengthClass(text) {
   justify-content: space-between; /* 改为两端对齐 */
   align-items: center;
   padding: 0 0 0 calc(16 * var(--vw-unit)); /* 只保留左侧内边距 */
-  background-color: white;
+  background-color: var(--color-background, white);
   border-radius: calc(30 * var(--vw-unit));
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) rgba(0, 0, 0, 0.1);
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundAlt, rgba(0, 0, 0, 0.1)); /* 根据主题调整阴影颜色 */
   width: 90%; /* 宽度设为90% */
-  height: calc(60 * var(--vw-unit));
+  height: calc(70 * var(--vw-unit)); /* 从60调整为70，增加结算栏高度 */
   box-sizing: border-box;
   position: fixed;
-  bottom: calc(70 * var(--vw-unit)); /* 调整底部距离，确保在导航栏上方 */
+  bottom: calc(80 * var(--vw-unit)); 
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
+  z-index: 200; /* 增加z-index确保其位于New标签之上 */
   overflow: hidden; /* 确保内容不溢出圆角 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加微妙边框增强可见度 */
 }
 
 .cart-info {
@@ -1082,6 +1636,7 @@ function getTextLengthClass(text) {
   position: relative;
   flex: 1; /* 占据剩余空间 */
   padding-right: calc(10 * var(--vw-unit)); /* 右侧留出一些空间 */
+  justify-content: center; /* 垂直居中内容 */
 }
 
 .cart-info::before {
@@ -1090,9 +1645,9 @@ function getTextLengthClass(text) {
   left: calc(-40 * var(--vw-unit)); /* 调整图标位置 */
   top: 50%;
   transform: translateY(-50%);
-  width: calc(32 * var(--vw-unit)); /* 使用变量 */
-  height: calc(32 * var(--vw-unit)); /* 使用变量 */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 18C8.1 18 9 18.9 9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18ZM17 18C18.1 18 19 18.9 19 20C19 21.1 18.1 22 17 22C15.9 22 15 21.1 15 20C15 18.9 15.9 18 17 18Z' fill='%23002eb8'/%3E%3Cpath d='M7 15H17C18.1 15 19 14.1 19 13V9C19 7.9 18.1 7 17 7H7C5.9 7 5 7.9 5 9V13C5 14.1 5.9 15 7 15Z' stroke='%23002eb8' stroke-width='2'/%3E%3Cpath d='M15 9H9C8.4 9 8 9.4 8 10C8 10.6 8.4 11 9 11H15C15.6 11 16 10.6 16 10C16 9.4 15.6 9 15 9Z' fill='%23002eb8'/%3E%3C/svg%3E");
+  width: calc(38 * var(--vw-unit)); /* 增加图标尺寸 */
+  height: calc(38 * var(--vw-unit)); /* 增加图标尺寸 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 18C8.1 18 9 18.9 9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18ZM17 18C18.1 18 19 18.9 19 20C19 21.1 18.1 22 17 22C15.9 22 15 21.1 15 20C15 18.9 15.9 18 17 18Z' fill='var(--color-blueButtonDark, %23003399)'/%3E%3Cpath d='M7 15H17C18.1 15 19 14.1 19 13V9C19 7.9 18.1 7 17 7H7C5.9 7 5 7.9 5 9V13C5 14.1 5.9 15 7 15Z' stroke='var(--color-blueButtonDark, %23003399)' stroke-width='2'/%3E%3Cpath d='M15 9H9C8.4 9 8 9.4 8 10C8 10.6 8.4 11 9 11H15C15.6 11 16 10.6 16 10C16 9.4 15.6 9 15 9Z' fill='var(--color-blueButtonDark, %23003399)'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%; /* 确保图标完全填充 */
@@ -1102,13 +1657,13 @@ function getTextLengthClass(text) {
   content: attr(data-count);
   position: absolute;
   left: calc(-28 * var(--vw-unit)); /* 调整气泡位置 */
-  top: calc(-5 * var(--vw-unit));
-  background-color: #FF5000; /* 修改为橙色 */
+  top: calc(-6 * var(--vw-unit)); /* 微调顶部位置 */
+  background-color: var(--color-itemCountBubble, #FF5000); /* 使用主题变量 */
   color: white;
-  font-size: calc(11 * var(--vw-unit));
+  font-size: calc(12 * var(--vw-unit)); /* 增加字体大小 */
   font-weight: normal;
-  width: calc(20 * var(--vw-unit));
-  height: calc(20 * var(--vw-unit));
+  width: calc(24 * var(--vw-unit)); /* 增加气泡尺寸 */
+  height: calc(24 * var(--vw-unit)); /* 增加气泡尺寸 */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1123,7 +1678,7 @@ function getTextLengthClass(text) {
   font-size: calc(11 * var(--vw-unit));
   font-weight: normal;
   color: white;
-  background-color: #FF5000; /* 修改为橙色 */
+  background-color: var(--color-itemCountBubble, #FF5000); /* 使用主题变量 */
   border-radius: 50%;
   min-width: calc(22 * var(--vw-unit));
   height: calc(22 * var(--vw-unit));
@@ -1135,20 +1690,20 @@ function getTextLengthClass(text) {
   padding: 0;
   z-index: 2;
   box-shadow: none;
-  border: var(--border-width) solid white;
+  border: var(--border-width) solid var(--color-backgroundAlt, white);
 }
 
 .total-price {
-  font-size: calc(15 * var(--vw-unit)); /* 调整字体大小 */
+  font-size: calc(16 * var(--vw-unit)); /* 调整字体大小 */
   font-weight: 500; /* 调整字重 */
-  line-height: 1.2;
+  line-height: 1.3; /* 增加行高 */
 }
 
 .total-price span {
-  color: rgb(249, 102, 67);
+  color: var(--color-priceColor, #ff5000);
   font-weight: bold;
-  font-size: calc(17 * var(--vw-unit)); /* 价格字体稍大 */
-  margin-left: calc(4 * var(--vw-unit));
+  font-size: calc(18 * var(--vw-unit)); /* 增加价格字体大小 */
+  margin-left: calc(6 * var(--vw-unit));
 }
 
 .discount-info {
@@ -1158,12 +1713,12 @@ function getTextLengthClass(text) {
 }
 
 .checkout-btn {
-  background-color: rgb(0, 46, 184); /* 修改为指定的蓝色 */
+  background-color: var(--color-blueButton, #003cc8); /* 使用蓝色按钮变量 */
   color: white;
   border: none;
   border-radius: 0 calc(30 * var(--vw-unit)) calc(30 * var(--vw-unit)) 0; /* 右侧圆角与结算栏一致 */
   padding: 0 calc(25 * var(--vw-unit));
-  font-size: calc(16 * var(--vw-unit));
+  font-size: calc(18 * var(--vw-unit)); /* 从16增加到18 */
   font-weight: bold;
   height: 100%; /* 与结算栏同高 */
   display: flex;
@@ -1184,8 +1739,8 @@ function getTextLengthClass(text) {
   display: flex;
   justify-content: space-around;
   padding: calc(6 * var(--vw-unit)) 0;
-  background-color: white;
-  border-top: var(--border-width) solid #e0e0e0;
+  background-color: var(--color-backgroundAlt, white);
+  border-top: var(--border-width) solid var(--color-border, #e0e0e0);
   width: 100%;
   height: calc(56 * var(--vw-unit));
   box-sizing: border-box;
@@ -1201,14 +1756,14 @@ function getTextLengthClass(text) {
   align-items: center;
   justify-content: center;
   font-size: calc(10 * var(--vw-unit));
-  color: rgb(195, 212, 220); /* 未选中时的颜色 */
+  color: var(--color-textTertiary, rgb(195, 212, 220)); /* 未选中时的颜色 */
   padding: 0;
   transition: color 0.2s ease;
   flex: 1;
 }
 
 .tab-item.active {
-  color: rgb(0, 46, 184); /* 选中时的颜色 */
+  color: var(--color-blueButton, rgb(0, 46, 184)); /* 使用蓝色按钮变量 */
 }
 
 .tab-icon {
@@ -1233,7 +1788,7 @@ function getTextLengthClass(text) {
 }
 
 .tab-item.active .home-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002eb8'%3E%3Cpath d='M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003cc8'%3E%3Cpath d='M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z'/%3E%3C/svg%3E");
 }
 
 .order-icon::before {
@@ -1250,7 +1805,7 @@ function getTextLengthClass(text) {
 }
 
 .tab-item.active .order-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002eb8'%3E%3Cpath d='M16 6v8h3v8h2V2c-2.76 0-5 2.24-5 4zm-5 3H9V2H7v7H5V2H3v7c0 2.21 1.79 4 4 4v9h2v-9c2.21 0 4-1.79 4-4V2h-2v7z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003cc8'%3E%3Cpath d='M16 6v8h3v8h2V2c-2.76 0-5 2.24-5 4zm-5 3H9V2H7v7H5V2H3v7c0 2.21 1.79 4 4 4v9h2v-9c2.21 0 4-1.79 4-4V2h-2v7z'/%3E%3C/svg%3E");
 }
 
 .mall-icon::before {
@@ -1267,7 +1822,7 @@ function getTextLengthClass(text) {
 }
 
 .tab-item.active .mall-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002eb8'%3E%3Cpath d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003cc8'%3E%3Cpath d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
 }
 
 .card-icon::before {
@@ -1284,7 +1839,7 @@ function getTextLengthClass(text) {
 }
 
 .tab-item.active .card-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002eb8'%3E%3Cpath d='M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003cc8'%3E%3Cpath d='M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E");
 }
 
 .me-icon::before {
@@ -1301,7 +1856,7 @@ function getTextLengthClass(text) {
 }
 
 .tab-item.active .me-icon::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23002eb8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003cc8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
 }
 
 /* 响应式调整 */
@@ -1367,7 +1922,9 @@ function getTextLengthClass(text) {
   }
   
   .checkout-bar {
-    bottom: calc(74 * var(--vw-unit)); /* 调整结算栏位置 */
+    /* 调整结算栏位置 */
+    /* bottom: calc(74 * var(--vw-unit));  */
+    bottom: calc(40 * var(--vw-unit)); 
   }
   
   /* 导航栏响应式调整 */
@@ -1429,15 +1986,17 @@ function getTextLengthClass(text) {
   position: fixed;
   top: calc(50 * var(--vw-unit));
   right: calc(16 * var(--vw-unit));
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-radius: calc(8 * var(--vw-unit));
   width: calc(180 * var(--vw-unit));
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(10 * var(--vw-unit)) rgba(0, 0, 0, 0.15);
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(10 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.15)); /* 响应主题的阴影 */
   z-index: 1000;
   transition: all 0.3s ease;
   opacity: 0;
   transform: translateY(calc(-10 * var(--vw-unit)));
   pointer-events: none;
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .panel-header {
@@ -1445,20 +2004,20 @@ function getTextLengthClass(text) {
   justify-content: space-between;
   align-items: center;
   padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f0f0f0;
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
 }
 
 .panel-header span {
   font-size: calc(15 * var(--vw-unit));
   font-weight: 500;
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 .close-btn {
   background: none;
   border: none;
   font-size: calc(18 * var(--vw-unit));
-  color: #999;
+  color: var(--color-textLight, #999);
   cursor: pointer;
   padding: 0;
   width: calc(24 * var(--vw-unit));
@@ -1491,7 +2050,7 @@ function getTextLengthClass(text) {
 
 .panel-item span {
   font-size: calc(14 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 .item-count-bubble {
@@ -1501,7 +2060,7 @@ function getTextLengthClass(text) {
   font-size: calc(11 * var(--vw-unit));
   font-weight: normal;
   color: white;
-  background-color: #FF5000; /* 修改为橙色 */
+  background-color: var(--color-itemCountBubble, #FF5000); /* 使用主题变量 */
   border-radius: 50%;
   min-width: calc(22 * var(--vw-unit));
   height: calc(22 * var(--vw-unit));
@@ -1513,7 +2072,7 @@ function getTextLengthClass(text) {
   padding: 0;
   z-index: 2;
   box-shadow: none;
-  border: var(--border-width) solid white;
+  border: var(--border-width) solid var(--color-backgroundAlt, white);
 }
 
 /* 确保左按钮略大一些 */
@@ -1523,5 +2082,56 @@ function getTextLengthClass(text) {
 
 .delivery-toggle .toggle-btn:last-child {
   flex: 0.9; /* 给第二个按钮略少的空间 */
+}
+
+/* 添加SVG样式，用于主题切换 */
+.svg-blue-fill { fill: var(--color-blueButton, #003cc8) !important; }
+.svg-blue-stroke { stroke: var(--color-blueButton, #003cc8) !important; }
+.svg-blue-dark-fill { fill: var(--color-blueButtonDark, #003399) !important; }
+.svg-blue-dark-stroke { stroke: var(--color-blueButtonDark, #003399) !important; }
+
+/* 为SVG图标添加通用样式 */
+svg path.theme-fill { fill: var(--color-blueButtonDark, #003399) !important; }
+svg path.theme-stroke { stroke: var(--color-blueButtonDark, #003399) !important; }
+
+/* 为订单图标SVG添加特定样式 */
+.order-btn svg path[fill="#0039ac"],
+.store-info svg path[fill="#0039ac"] {
+  fill: var(--color-blueButtonDark, #0039ac);
+}
+
+.order-btn svg path[stroke="#0039ac"],
+.store-info svg path[stroke="#0039ac"] {
+  stroke: var(--color-blueButtonDark, #0039ac);
+}
+
+/* 添加SVG动态更新的类，使用JavaScript来实现动态颜色 */
+.svg-dynamic-color {
+  filter: var(--svg-color-filter);
+}
+
+/* 为购物车图标定义样式 */
+.cart-icon-theme {
+  fill: var(--color-blueButtonDark, #003399) !important;
+  stroke: var(--color-blueButtonDark, #003399) !important;
+}
+
+
+.modal-content {
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit));
+  width: 80%;
+  max-width: calc(320 * var(--vw-unit));
+  padding: calc(24 * var(--vw-unit));
+  text-align: center;
+  box-shadow: 0 calc(4 * var(--vw-unit)) calc(20 * var(--vw-unit)) rgba(0, 0, 0, 0.2);
+}
+
+.panel-item:hover {
+  background-color: var(--color-backgroundDark, rgba(0, 0, 0, 0.05));
+}
+
+.close-btn:hover {
+  background-color: var(--color-backgroundDark, rgba(0, 0, 0, 0.05));
 }
 </style> 

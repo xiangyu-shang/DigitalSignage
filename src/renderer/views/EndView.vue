@@ -351,7 +351,7 @@ function formatProductOptions(options) {
   display: flex;
   flex-direction: column;
   height: 100vh; /* 使用固定高度而非min-height */
-  background-color: #f5f5f5;
+  background-color: var(--color-background, #f5f5f5);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
   overflow: hidden; /* 防止整个视图滚动 */
@@ -363,7 +363,7 @@ function formatProductOptions(options) {
   justify-content: space-between;
   align-items: center;
   padding: calc(4 * var(--vw-unit)) calc(16 * var(--vw-unit));
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   font-size: calc(12 * var(--vw-unit));
   height: calc(24 * var(--vw-unit));
   box-sizing: border-box;
@@ -380,7 +380,7 @@ function formatProductOptions(options) {
   justify-content: space-between;
   align-items: center;
   padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
-  background-color: rgb(245,245,245);
+  background-color: var(--color-backgroundDark, rgb(245,245,245));
   border-bottom: var(--border-width) solid #f0f0f0;
   height: calc(56 * var(--vw-unit));
   box-sizing: border-box;
@@ -412,7 +412,7 @@ function formatProductOptions(options) {
   position: absolute;
   width: calc(10 * var(--vw-unit));
   height: calc(2 * var(--vw-unit));
-  background-color: rgb(147,147,147);
+  background-color: var(--color-textSecondary,  rgb(147,147,147));
   left: 0;
 }
 
@@ -453,22 +453,25 @@ function formatProductOptions(options) {
 .section-header {
   display: flex;
   align-items: center;
-  padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f0f0f0;
+  padding: calc(16 * var(--vw-unit)); /* 增加内边距 */
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
 }
 
 .section-title {
-  font-size: calc(16 * var(--vw-unit));
+  font-size: calc(18 * var(--vw-unit)); /* 增大标题字体 */
   font-weight: bold;
-  margin: 0 0 0 calc(8 * var(--vw-unit));
+  margin: 0 0 0 calc(10 * var(--vw-unit)); /* 增加左侧间距 */
 }
 
 /* 配送信息 */
 .delivery-section {
-  margin-top: calc(12 * var(--vw-unit));
-  background-color: white;
-  border-radius: calc(8 * var(--vw-unit));
+  margin-top: calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit)); /* 增加圆角 */
   overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 添加轻微阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加边框 */
 }
 
 .delivery-info {
@@ -484,6 +487,7 @@ function formatProductOptions(options) {
 .store-name {
   font-size: calc(16 * var(--vw-unit));
   font-weight: 500;
+  color: var(--color-textPrimary, #333);
 }
 
 .store-distance {
@@ -500,21 +504,24 @@ function formatProductOptions(options) {
 
 .address {
   font-size: calc(14 * var(--vw-unit));
-  color: #666;
+  color: var(--color-textSecondary, #666);
   margin-bottom: calc(8 * var(--vw-unit));
 }
 
 .pickup-time {
   font-size: calc(14 * var(--vw-unit));
-  color: #0055ff;
+  color: var(--color-blueButton, #0055ff);
 }
 
 /* 商品列表 */
 .products-section {
-  margin-top: calc(12 * var(--vw-unit));
-  background-color: white;
-  border-radius: calc(8 * var(--vw-unit));
+  margin-top: calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit)); /* 增加圆角 */
   overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 添加轻微阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加边框 */
 }
 
 .product-list {
@@ -524,7 +531,7 @@ function formatProductOptions(options) {
 .product-item {
   display: flex;
   padding: calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f0f0f0;
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
 }
 
 .product-item:last-child {
@@ -580,14 +587,14 @@ function formatProductOptions(options) {
   font-size: calc(17 * var(--vw-unit));
   font-weight: bold;
   margin: 0;
-  color: #333;
+  color: var(--color-textPrimary, #333);
   flex: 1;
 }
 
 .product-price {
   font-size: calc(17 * var(--vw-unit));
   font-weight: bold;
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
   white-space: nowrap;
   margin-left: calc(8 * var(--vw-unit));
 }
@@ -601,7 +608,7 @@ function formatProductOptions(options) {
 
 .product-specs {
   font-size: calc(13 * var(--vw-unit));
-  color: #888;
+  color: var(--color-textTertiary, #888);
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -610,7 +617,7 @@ function formatProductOptions(options) {
 
 .product-original-price {
   font-size: calc(13 * var(--vw-unit));
-  color: #999;
+  color: var(--color-textLight, #999);
   text-decoration: line-through;
   margin-left: calc(8 * var(--vw-unit));
 }
@@ -623,31 +630,34 @@ function formatProductOptions(options) {
 
 .coupon-tag {
   font-size: calc(14 * var(--vw-unit));
-  color: #ff5000;
-  border: var(--border-width) solid #ff5000;
+  color: var(--color-priceColor, #ff5000);
+  border: var(--border-width) solid var(--color-priceColor, #ff5000);
   border-radius: calc(3 * var(--vw-unit));
   padding: calc(2 * var(--vw-unit)) calc(6 * var(--vw-unit));
 }
 
 .product-quantity {
   font-size: calc(14 * var(--vw-unit));
-  color: #999;
+  color: var(--color-textLight, #999);
 }
 
 /* 优惠信息 */
 .discount-section {
-  margin-top: calc(12 * var(--vw-unit));
-  background-color: white;
-  border-radius: calc(8 * var(--vw-unit));
+  margin-top: calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit)); /* 增加圆角 */
   overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 添加轻微阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加边框 */
 }
 
 .discount-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f0f0f0;
+  padding: calc(20 * var(--vw-unit)) calc(16 * var(--vw-unit));
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0);
 }
 
 .discount-item:last-child {
@@ -657,36 +667,46 @@ function formatProductOptions(options) {
 .discount-name {
   display: flex;
   align-items: center;
-  font-size: calc(15 * var(--vw-unit));
-  color: #333;
+  font-size: calc(16 * var(--vw-unit));
+  color: var(--color-textPrimary, #333);
 }
 
 .discount-count, .points-available {
-  font-size: calc(12 * var(--vw-unit));
-  color: #ff5000;
-  margin-left: calc(8 * var(--vw-unit));
-  background-color: #fff0e8;
-  padding: calc(2 * var(--vw-unit)) calc(6 * var(--vw-unit));
-  border-radius: calc(10 * var(--vw-unit));
+  font-size: calc(14 * var(--vw-unit)); 
+  color: var(--color-priceColor, #ff5000);
+  margin-left: calc(12 * var(--vw-unit)); 
+  background-color: var(--color-priceTagBackground, #fff0e8);
+  padding: calc(4 * var(--vw-unit)) calc(10 * var(--vw-unit)); 
+  border-radius: calc(12 * var(--vw-unit)); 
+  display: inline-block; 
+  line-height: 1.3; 
+  position: relative; 
+  top: calc(1 * var(--vw-unit)); 
 }
 
 .discount-action {
   display: flex;
   align-items: center;
+  font-size: calc(16 * var(--vw-unit));
+  color: var(--color-textPrimary, #333);
 }
 
 .discount-value, .points-value {
-  font-size: calc(15 * var(--vw-unit));
-  color: #ff5000;
-  margin-right: calc(8 * var(--vw-unit));
+  font-size: calc(16 * var(--vw-unit));
+  color: var(--color-priceColor, #ff5000);
+  margin-right: calc(12 * var(--vw-unit));
+  font-weight: 500;
 }
 
 /* 支付方式 */
 .payment-section {
-  margin-top: calc(12 * var(--vw-unit));
-  background-color: white;
-  border-radius: calc(8 * var(--vw-unit));
+  margin-top: calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit)); /* 增加圆角 */
   overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 添加轻微阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加边框 */
 }
 
 .payment-options {
@@ -697,51 +717,88 @@ function formatProductOptions(options) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid #f0f0f0;
+  padding: calc(20 * var(--vw-unit)) calc(16 * var(--vw-unit));
+  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0); /* 使用主题变量，适应深色模式 */
   cursor: pointer;
+  transition: background-color 0.2s ease; /* 添加过渡效果 */
 }
 
 .payment-option:last-child {
   border-bottom: none;
 }
 
+.payment-option:hover {
+  background-color: var(--color-backgroundDark, rgba(0, 0, 0, 0.03)); /* 添加悬停效果 */
+}
+
+.payment-option.active {
+  background-color: var(--color-backgroundDark, rgba(var(--color-blueButton-rgb, 0, 33, 170), 0.05));
+}
+
+.check-icon {
+  color: var(--color-blueButton, rgb(0, 33, 170));
+  font-size: calc(20 * var(--vw-unit)); /* 从16增加到20 */
+  font-weight: bold; /* 加粗 */
+  margin-right: calc(8 * var(--vw-unit)); /* 添加右侧间距 */
+  min-width: calc(20 * var(--vw-unit)); /* 确保宽度一致 */
+  text-align: center; /* 居中对齐 */
+}
+
+/* 修改支付LOGO容器的样式，使其更加美观 */
+.wechat-pay, .alipay, .card-pay {
+  border-radius: calc(8 * var(--vw-unit)); /* 增加圆角 */
+  transition: all 0.2s ease; /* 添加过渡效果 */
+  width: auto; /* 移除固定宽度 */
+  padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit)); /* 调整内边距 */
+  min-width: calc(90 * var(--vw-unit)); /* 确保最小宽度 */
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 0, 0, 0.1); /* 添加阴影 */
+}
+
 .payment-option-left {
   display: flex;
   align-items: center;
+  flex: 1; /* 添加flex属性占据剩余空间 */
 }
 
 .payment-logo {
-  width: calc(24 * var(--vw-unit));
-  height: calc(24 * var(--vw-unit));
-  margin-right: calc(12 * var(--vw-unit));
+  width: calc(28 * var(--vw-unit)); /* 从24增加到36 */
+  height: calc(28 * var(--vw-unit)); /* 从24增加到36 */
+  margin-right: calc(16 * var(--vw-unit)); /* 从12增加到16 */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: calc(4 * var(--vw-unit));
-  font-size: calc(12 * var(--vw-unit));
+  border-radius: calc(6 * var(--vw-unit)); /* 从4增加到6 */
+  font-size: calc(14 * var(--vw-unit)); /* 从12增加到14 */
   color: white;
+  min-width: calc(28 * var(--vw-unit)); /* 添加最小宽度确保不会被压缩 */
 }
 
 .wechat-pay {
   background-color: #07C160;
+  width: calc(100 * var(--vw-unit)); /* 显著增加宽度 */
+  justify-content: flex-start; /* 文字左对齐 */
+  padding-left: calc(12 * var(--vw-unit)); /* 添加左侧内边距 */
 }
 
 .alipay {
   background-color: #1677FF;
+  width: calc(100 * var(--vw-unit)); /* 显著增加宽度 */
+  justify-content: flex-start; /* 文字左对齐 */
+  padding-left: calc(12 * var(--vw-unit)); /* 添加左侧内边距 */
 }
 
 .card-pay {
   background-color: #FF6C00;
+  width: calc(100 * var(--vw-unit)); /* 显著增加宽度 */
+  justify-content: flex-start; /* 文字左对齐 */
+  padding-left: calc(12 * var(--vw-unit)); /* 添加左侧内边距 */
 }
 
 .payment-option-left span {
-  font-size: calc(15 * var(--vw-unit));
-}
-
-.check-icon {
-  color: rgb(0, 33, 170);
-  font-size: calc(16 * var(--vw-unit));
+  font-size: calc(16 * var(--vw-unit)); /* 从15增加到16 */
+  color: var(--color-textPrimary, #333);
+  white-space: nowrap; /* 防止文字换行 */
+  padding-right: calc(16 * var(--vw-unit)); /* 添加右侧内边距 */
 }
 
 .check-icon.hidden {
@@ -750,10 +807,13 @@ function formatProductOptions(options) {
 
 /* 订单备注 */
 .remarks-section {
-  margin-top: calc(12 * var(--vw-unit));
-  background-color: white;
-  border-radius: calc(8 * var(--vw-unit));
+  margin-top: calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white);
+  border-radius: calc(12 * var(--vw-unit)); /* 增加圆角 */
   overflow: hidden;
+  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.05)); /* 添加轻微阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加边框 */
   margin-bottom: calc(12 * var(--vw-unit));
 }
 
@@ -763,17 +823,17 @@ function formatProductOptions(options) {
 
 .remarks-input {
   width: 100%;
-  border: var(--border-width) solid #e0e0e0;
+  border: var(--border-width) solid var(--color-border, #e0e0e0);
   border-radius: calc(8 * var(--vw-unit));
   padding: calc(12 * var(--vw-unit));
   font-size: calc(14 * var(--vw-unit));
-  color: #333;
-  background-color: #f9f9f9;
+  color: var(--color-textPrimary, #333);
+  background-color: var(--color-backgroundDark, #f9f9f9);
   box-sizing: border-box;
 }
 
 .remarks-input::placeholder {
-  color: #999;
+  color: var(--color-textLight, #999);
 }
 
 /* 底部结算栏 */
@@ -782,15 +842,17 @@ function formatProductOptions(options) {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: white;
+  background-color: var(--color-backgroundDark, white);
   padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) rgba(0, 0, 0, 0.05);
+  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) 
+              var(--color-backgroundAlt, rgba(0, 0, 0, 0.05)); /* 响应主题的阴影 */
   z-index: 10;
   height: calc(70 * var(--vw-unit));
   box-sizing: border-box;
+  border-top: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .price-info {
@@ -800,23 +862,23 @@ function formatProductOptions(options) {
 
 .total-price {
   font-size: calc(14 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 .price-value {
   font-size: calc(18 * var(--vw-unit));
   font-weight: bold;
-  color: #ff5000;
+  color: var(--color-priceColor, #ff5000);
 }
 
 .discount-info {
   font-size: calc(12 * var(--vw-unit));
-  color: #999;
+  color: var(--color-textLight, #999);
   margin-top: calc(2 * var(--vw-unit));
 }
 
 .checkout-btn {
-  background-color: rgb(0, 33, 170);
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
   color: white;
   border: none;
   border-radius: calc(22 * var(--vw-unit));
@@ -847,13 +909,15 @@ function formatProductOptions(options) {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-backgroundAlt, white);
   border-radius: calc(12 * var(--vw-unit));
   width: 80%;
   max-width: calc(320 * var(--vw-unit));
   padding: calc(24 * var(--vw-unit));
   text-align: center;
-  box-shadow: 0 calc(4 * var(--vw-unit)) calc(20 * var(--vw-unit)) rgba(0, 0, 0, 0.2);
+  box-shadow: 0 calc(4 * var(--vw-unit)) calc(20 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.2)); /* 响应主题的阴影 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加响应主题的边框 */
 }
 
 .success-icon {
@@ -873,27 +937,27 @@ function formatProductOptions(options) {
   font-size: calc(20 * var(--vw-unit));
   font-weight: bold;
   margin: 0 0 calc(12 * var(--vw-unit));
-  color: #333;
+  color: var(--color-textPrimary, #333);
 }
 
 .success-message {
   font-size: calc(14 * var(--vw-unit));
-  color: #666;
+  color: var(--color-textSecondary, #666);
   margin: 0 0 calc(16 * var(--vw-unit));
 }
 
 .order-number {
   font-size: calc(16 * var(--vw-unit));
   font-weight: bold;
-  color: #333;
-  background-color: #f5f5f5;
+  color: var(--color-textPrimary, #333);
+  background-color: var(--color-backgroundDark, #f5f5f5);
   padding: calc(12 * var(--vw-unit));
   border-radius: calc(8 * var(--vw-unit));
   margin: 0 0 calc(24 * var(--vw-unit));
 }
 
 .close-btn {
-  background-color: rgb(0, 33, 170);
+  background-color: var(--color-blueButton, rgb(0, 33, 170));
   color: white;
   border: none;
   border-radius: calc(22 * var(--vw-unit));
@@ -909,13 +973,8 @@ function formatProductOptions(options) {
 .empty-cart {
   padding: calc(40 * var(--vw-unit)) 0;
   text-align: center;
-  color: #999;
+  color: var(--color-textLight, #999);
   font-size: calc(14 * var(--vw-unit));
-}
-
-/* 活跃支付方式 */
-.payment-option.active {
-  background-color: rgba(0, 33, 170, 0.05);
 }
 </style>
 
