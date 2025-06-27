@@ -1,5 +1,29 @@
 <template>
-  <div class="menu-view">
+  <div class="menu-view" :class="themeStore.currentThemeId + '-theme'">
+    <!-- Logo顶部栏 -->
+    <div class="logo-header">
+      <div class="logo-container">
+        <img src="/images/Rusin网站LOGO.png" alt="Rusin Display" class="logo-image" />
+      </div>
+      <!-- 功能按钮区移至此处 -->
+      <div class="func-buttons header-buttons">
+        <button class="more-btn" @click="openSignagePanel">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="4" cy="12" r="2.2" class="dots-icon"/>
+            <circle cx="12" cy="12" r="3.2" class="dots-icon"/>
+            <circle cx="20" cy="12" r="2.2" class="dots-icon"/>
+          </svg>
+        </button>
+        <div class="button-divider"></div>
+        <button class="scan-btn">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" class="scan-icon-bg"/>
+            <circle cx="12" cy="12" r="5" class="scan-icon-circle" stroke-width="4" fill="none"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- 顶部导航栏 -->
     <div class="nav-bar">
       <!-- 自提/外送切换 -->
@@ -24,23 +48,7 @@
         <input type="text" class="search-input" placeholder="Light Fruit Tea 🍃" />
       </div>
 
-      <!-- 功能按钮区 -->
-      <div class="func-buttons">
-        <button class="more-btn" @click="openSignagePanel">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="4" cy="12" r="2.2" fill="#333333"/>
-            <circle cx="12" cy="12" r="3.2" fill="#333333"/>
-            <circle cx="20" cy="12" r="2.2" fill="#333333"/>
-          </svg>
-        </button>
-        <div class="button-divider"></div>
-        <button class="scan-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" fill="#222"/>
-            <circle cx="12" cy="12" r="5" stroke="white" stroke-width="4" fill="none"/>
-          </svg>
-        </button>
-      </div>
+      <!-- 功能按钮区移至顶部栏 -->
     </div>
 
     <!-- 数字标牌系统方框 - 默认隐藏，鼠标悬停时显示 -->
@@ -84,33 +92,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 门店信息 -->
-    <!-- <div class="store-info">
-      <div class="store-left">
-        <svg class="location-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#666666"/>
-        </svg>
-        <span class="store-name">Chenxi Industrial Park | 491m</span>
-        <i class="arrow-icon"></i>
-      </div>
-      <div class="store-right">
-        <button class="order-btn">
-          <svg class="order-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 18C8.1 18 9 18.9 9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18ZM17 18C18.1 18 19 18.9 19 20C19 21.1 18.1 22 17 22C15.9 22 15 21.1 15 20C15 18.9 15.9 18 17 18Z" fill="#0039ac"/>
-            <path d="M7 15H17C18.1 15 19 14.1 19 13V9C19 7.9 18.1 7 17 7H7C5.9 7 5 7.9 5 9V13C5 14.1 5.9 15 7 15Z" stroke="#0039ac" stroke-width="2"/>
-            <path d="M15 9H9C8.4 9 8 9.4 8 10C8 10.6 8.4 11 9 11H15C15.6 11 16 10.6 16 10C16 9.4 15.6 9 15 9Z" fill="#0039ac"/>
-          </svg>
-          <span>Group Order</span>
-        </button>
-      </div>
-    </div> -->
-
-    <!-- 优惠信息 -->
-    <!-- <div class="promotion-info">
-      <span class="price-tag">¥9.9</span>
-      <span class="time-tag">9.9 Limited Time Offer</span>
-    </div> -->
 
     <!-- 主内容区 -->
     <div class="main-content">
@@ -598,471 +579,65 @@ function closePaymentSuccess() {
   overflow: hidden;
 }
 
-/* 内容区域 */
-.content-area {
-  flex: 1;
+/* Logo顶部栏样式 */
+.logo-header {
   display: flex;
-  overflow: hidden;
-  position: relative;
-}
-
-/* 左侧分类栏 */
-.category-sidebar {
-  width: calc(100 * var(--vw-unit));
-  background-color: var(--color-background, #f5f5f5);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(100 * var(--vw-unit));
-  z-index: 2;
-}
-
-.category-item {
-  padding: calc(15 * var(--vw-unit)) calc(12 * var(--vw-unit));
-  font-size: calc(14 * var(--vw-unit));
-  text-align: center;
-  position: relative;
-  white-space: normal;
-  word-wrap: break-word;
-  color: var(--color-textSecondary, #ffffff);
-  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10 * var(--vw-unit)) calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white); /* 使用与导航栏相同的背景颜色变量 */
+  height: calc(62 * var(--vw-unit)); /* 放大约1.3倍（从48增加到62） */
   box-sizing: border-box;
-  height: calc(70 * var(--vw-unit));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.category-item.active {
-  color: var(--color-blueButton, rgb(0, 46, 184)); /* 使用蓝色按钮变量 */
-  background: linear-gradient(to right, var(--color-backgroundDark, #e9e9e9) 0%, var(--color-background, #f5f5f5) 100%);
-  border-left: none;
   position: relative;
-  height: calc(56 * var(--vw-unit)); /* 减小选中时的高度 */
+  z-index: 10; /* 确保在较高层级 */
+  transition: background-color 0.3s; /* 平滑过渡背景色 */
+  border-bottom: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加与导航栏一致的底部边框 */
 }
 
-/* 商品列表区域 */
-.products-area {
-  flex: 1;
-  background-color: var(--color-backgroundAlt, white);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(100 * var(--vw-unit));
-  position: relative;
-  z-index: 1;
+/* 适应不同主题 - 移除原有的伪元素背景 */
+.logo-header::before {
+  content: none; /* 移除原来的伪元素背景 */
 }
 
-/* 分类标题 */
-.category-title {
-  padding: calc(16 * var(--vw-unit)) calc(16 * var(--vw-unit)) calc(8 * var(--vw-unit));
-  font-size: calc(18 * var(--vw-unit));
-  font-weight: bold;
-  color: var(--color-textPrimary, #333);
-  position: sticky;
-  top: 0;
-  background-color: var(--color-backgroundAlt, white);
-  z-index: 2;
-}
-
-/* 商品网格 */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: calc(12 * var(--vw-unit));
-  padding: 0 calc(12 * var(--vw-unit)) calc(12 * var(--vw-unit));
-}
-
-/* 商品卡片 */
-.product-card {
-  background-color: var(--color-backgroundAlt, white);
-  border-radius: calc(12 * var(--vw-unit));
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(8 * var(--vw-unit)) rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
-  height: calc(240 * var(--vw-unit));
-  display: flex;
-  flex-direction: column;
-}
-
-.product-card:active {
-  transform: scale(0.98);
-  box-shadow: 0 calc(1 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 0, 0, 0.04);
-}
-
-/* 商品图片区域 */
-.product-image-container {
-  height: calc(150 * var(--vw-unit));
-  overflow: hidden;
-  position: relative;
-  background-color: var(--color-backgroundDark, #f8f8f8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.product-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.05);
-}
-
-/* 商品信息区域 */
-.product-info {
-  padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit));
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  font-size: calc(15 * var(--vw-unit));
-  font-weight: 600;
-  color: var(--color-textPrimary, #333);
-  margin: 0 0 calc(4 * var(--vw-unit));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.product-desc {
-  font-size: calc(12 * var(--vw-unit));
-  color: var(--color-textTertiary, #666);
-  margin: 0 0 calc(8 * var(--vw-unit));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  height: calc(32 * var(--vw-unit));
-}
-
-/* 商品价格行 */
-.product-price-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-}
-
-.product-price {
-  color: var(--color-priceColor, #ff5000);
-  font-size: calc(16 * var(--vw-unit));
-  font-weight: bold;
-}
-
-.price-label {
-  font-size: calc(14 * var(--vw-unit));
-}
-
-.product-original-price {
-  font-size: calc(12 * var(--vw-unit));
-  color: var(--color-textLight, #999);
-  text-decoration: line-through;
-  margin-left: calc(4 * var(--vw-unit));
-}
-
-/* 加入购物车按钮 */
-.add-to-cart {
-  width: calc(28 * var(--vw-unit));
-  height: calc(28 * var(--vw-unit));
-  border-radius: 50%;
-  background-color: var(--color-blueButton, rgb(0, 33, 170));
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 calc(2 * var(--vw-unit)) calc(4 * var(--vw-unit)) rgba(0, 0, 0, 0.1);
-}
-
-/* 底部导航栏 */
-.bottom-nav {
-  height: calc(60 * var(--vw-unit));
-  background-color: var(--color-backgroundAlt, white);
-  box-shadow: 0 calc(-2 * var(--vw-unit)) calc(10 * var(--vw-unit)) rgba(0, 0, 0, 0.05);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 calc(16 * var(--vw-unit));
-  z-index: 10;
-}
-
-.order-type-toggle {
-  display: flex;
-  background-color: var(--color-backgroundDark, #f5f5f5);
-  border-radius: calc(20 * var(--vw-unit));
-  overflow: hidden;
-}
-
-.order-type-btn {
-  padding: calc(6 * var(--vw-unit)) calc(16 * var(--vw-unit));
-  font-size: calc(14 * var(--vw-unit));
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: var(--color-textSecondary, #666);
-  position: relative;
-}
-
-.order-type-btn.active {
-  color: white;
-  font-weight: 600;
-}
-
-.pickup-btn.active {
-  background-color: var(--color-blueButton, rgb(0, 33, 170));
-}
-
-.delivery-btn.active {
-  background-color: var(--color-primary, #ff5000);
-}
-
-/* 商品详情抽屉 */
-.product-drawer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 80vh;
-  background-color: var(--color-backgroundAlt, white);
-  border-radius: calc(24 * var(--vw-unit)) calc(24 * var(--vw-unit)) 0 0;
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 100;
-  box-shadow: 0 calc(-10 * var(--vw-unit)) calc(30 * var(--vw-unit)) rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-drawer.open {
-  transform: translateY(0);
-}
-
-.drawer-header {
-  padding: calc(16 * var(--vw-unit));
-  border-bottom: var(--border-width) solid var(--color-border, #f0f0f0);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
-.drawer-title {
-  font-size: calc(18 * var(--vw-unit));
-  font-weight: bold;
-  color: var(--color-textPrimary, #333);
-  margin: 0;
-}
-
-.close-drawer {
-  width: calc(24 * var(--vw-unit));
-  height: calc(24 * var(--vw-unit));
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  position: relative;
-}
-
-.close-drawer::before,
-.close-drawer::after {
-  content: '';
-  position: absolute;
-  width: calc(16 * var(--vw-unit));
-  height: calc(2 * var(--vw-unit));
-  background-color: var(--color-textSecondary, #666);
-  top: 50%;
-  left: 50%;
-}
-
-.close-drawer::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.close-drawer::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.drawer-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: calc(16 * var(--vw-unit));
-  -webkit-overflow-scrolling: touch;
-}
-
-.drawer-footer {
-  padding: calc(16 * var(--vw-unit));
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: var(--border-width) solid var(--color-border, #f0f0f0);
-}
-
-.price-total {
-  color: var(--color-priceColor, #ff5000);
-  font-size: calc(20 * var(--vw-unit));
-  font-weight: bold;
-}
-
-.add-to-cart-btn {
-  background-color: var(--color-blueButton, rgb(0, 33, 170));
-  color: white;
-  border: none;
-  border-radius: calc(22 * var(--vw-unit));
-  padding: calc(12 * var(--vw-unit)) calc(24 * var(--vw-unit));
-  font-size: calc(16 * var(--vw-unit));
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* 遮罩层 */
-.drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
-  z-index: 99;
-}
-
-.drawer-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* 空商品状态 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(200 * var(--vw-unit));
-  color: var(--color-textLight, #999);
-}
-
-.empty-icon {
-  font-size: calc(48 * var(--vw-unit));
-  margin-bottom: calc(16 * var(--vw-unit));
-}
-
-.empty-text {
-  font-size: calc(14 * var(--vw-unit));
-}
-
-/* New标签 */
-.new-tag {
-  position: absolute;
-  top: calc(10 * var(--vw-unit));
-  left: calc(10 * var(--vw-unit));
-  background-color: var(--color-blueButton, rgb(0, 33, 170));
-  color: white;
-  font-size: calc(10 * var(--vw-unit));
-  padding: calc(2 * var(--vw-unit)) calc(6 * var(--vw-unit));
-  border-radius: calc(3 * var(--vw-unit));
-  z-index: 2;
-}
-
-/* 导航栏 */
-.nav-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit)); /* 减少水平内边距 */
-  background-color: var(--color-backgroundAlt, white);
-  border-bottom: none;
-  height: calc(48 * var(--vw-unit));
-  box-sizing: border-box;
-  gap: calc(8 * var(--vw-unit)); /* 减少元素之间的间距 */
-}
-
-/* 调试主题按钮 */
-.debug-theme-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(0,0,0,0.5);
-  color: white;
-  padding: 4px 8px;
-  font-size: 10px;
-  border-radius: 0 0 0 4px;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-.delivery-toggle {
-  display: flex;
-  border: var(--border-width) solid rgba(0, 0, 0, 0.05);
-  border-radius: calc(22 * var(--vw-unit));
-  overflow: hidden;
-  flex-shrink: 0;
-  height: var(--button-height-sm);
-  box-sizing: border-box;
-  width: calc(130 * var(--vw-unit)); /* 减少宽度 */
-  margin-right: calc(5 * var(--vw-unit)); /* 减少右侧外边距 */
-}
-
-.toggle-btn {
-  padding: 0 calc(14 * var(--vw-unit)); /* 增加内边距 */
-  border: none;
-  background-color: rgba(255, 255, 255, 0.7);
-  font-size: calc(13 * var(--vw-unit));
-  cursor: pointer;
+.logo-container {
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-  min-width: calc(60 * var(--vw-unit)); /* 增加最小宽度 */
-  font-weight: 400; /* 统一字重 */
-  flex: 1; /* 平均分配空间 */
-  white-space: nowrap; /* 确保文本不换行 */
 }
 
-/* 专门针对"Pick Up"按钮的样式 */
-.toggle-btn:first-child {
-  min-width: calc(68 * var(--vw-unit)); /* 为Pick Up按钮增加更多宽度 */
-  padding: 0 calc(10 * var(--vw-unit)); /* 调整内边距 */
-  letter-spacing: 0; /* 确保字母间距正常 */
+.logo-image {
+  height: calc(36 * var(--vw-unit)); /* 放大Logo图片（从28增加到36） */
+  max-width: calc(156 * var(--vw-unit)); /* 放大Logo图片（从120增加到156） */
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)); /* 添加微妙阴影 */
+  transition: filter 0.3s; /* 平滑过渡滤镜效果 */
 }
 
-.toggle-btn.active {
-  background-color: var(--color-primary, rgb(0, 46, 184));
-  color: white;
-  font-weight: 500;
-  letter-spacing: calc(0.2 * var(--vw-unit)); /* 增加字母间距提高可读性 */
+/* 将功能按钮区复制到顶部栏 */
+.header-buttons {
+  margin-left: 0; /* 重置左侧外边距 */
+  margin-right: 0; /* 重置右侧外边距 */
+  background-color: rgba(255, 255, 255, 0.2); /* 保留原有的半透明背景 */
+  border: var(--border-width) solid rgba(255, 255, 255, 0.2); /* 保留原有的半透明边框 */
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) rgba(0, 0, 0, 0.05); /* 微妙阴影 */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s; /* 平滑过渡效果 */
+  height: calc(44 * var(--vw-unit)); /* 增加按钮高度 */
+  min-width: calc(124 * var(--vw-unit)); /* 增加按钮区域宽度 */
 }
 
-/* 为了确保文字完整显示，对特定文字内容的按钮进行调整 */
-.toggle-btn:last-child {
-  letter-spacing: 0; /* 对"Delivery"按钮减少字母间距 */
-  font-size: calc(12.5 * var(--vw-unit)); /* 稍微调整字体大小 */
+/* 在深色模式下调整按钮区域 */
+.alternate-theme .header-buttons {
+  background-color: rgba(255, 255, 255, 0.15); /* 深色主题下稍微降低透明度 */
+  border-color: rgba(255, 255, 255, 0.15); /* 深色主题下调整边框颜色 */
 }
 
-/* 在小屏幕下进一步优化 */
-@media (max-width: 400px) {
-  .toggle-btn:last-child {
-    font-size: calc(11.5 * var(--vw-unit)); /* 更小的字体 */
-    letter-spacing: calc(-0.1 * var(--vw-unit)); /* 轻微的负字母间距 */
-  }
+/* 根据主题调整按钮SVG图标颜色 - 修复重复代码 */
+.default-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #333); /* 浅色主题下使用深色图标 */
+}
+
+.alternate-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #fff); /* 深色主题下使用浅色图标 */
 }
 
 .func-buttons {
@@ -1070,8 +645,7 @@ function closePaymentSuccess() {
   align-items: center;
   margin-left: calc(5 * var(--vw-unit)); /* 减少左侧外边距 */
   flex-shrink: 0;
-  background-color:  rgba(255, 255, 255, 0.7);
-  /* background-color: var(--color-backgroundAlt, rgba(255, 255, 255, 0.7)); */
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: calc(22 * var(--vw-unit));
   padding: calc(3 * var(--vw-unit)) calc(6 * var(--vw-unit)); /* 减少内边距 */
   border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05));
@@ -1085,21 +659,27 @@ function closePaymentSuccess() {
 
 .button-divider {
   width: var(--border-width);
-  height: calc(20 * var(--vw-unit));
+  height: calc(26 * var(--vw-unit)); /* 增加分隔线高度（从20增加到26） */
   background-color: var(--color-border, rgba(0, 0, 0, 0.1)); /* 使用主题变量，适应深色模式 */
-  margin: 0 calc(3 * var(--vw-unit)); /* 减少分隔线两侧的间距 */
+  margin: 0 calc(4 * var(--vw-unit)); /* 略微增加分隔线两侧的间距 */
   flex-shrink: 0;
+  transition: background-color 0.3s; /* 平滑过渡颜色变化 */
+}
+
+/* 深色主题下的分隔线颜色 */
+.alternate-theme .button-divider {
+  background-color: rgba(255, 255, 255, 0.2); /* 深色主题下使用浅色分隔线 */
 }
 
 .more-btn, .scan-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0 calc(8 * var(--vw-unit)); /* 减少按钮内边距 */
+  padding: 0 calc(10 * var(--vw-unit)); /* 增加按钮内边距 */
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.2s;
   flex: 1;
   height: 100%;
 }
@@ -1118,9 +698,9 @@ function closePaymentSuccess() {
 }
 
 .search-container {
-  width: 35%; /* 减小宽度比例 */
+  width: 60%; /* 增加宽度比例 */
   position: relative;
-  margin: 0 calc(5 * var(--vw-unit)); /* 减少左右外边距 */
+  margin: 0 auto; /* 居中显示 */
   display: flex;
   align-items: center;
   background-color: var(--color-backgroundDark, rgb(246,246,246));
@@ -1260,9 +840,8 @@ function closePaymentSuccess() {
   width: 100%;
   position: relative;
   gap: calc(2 * var(--vw-unit));
-  /* 计算高度：视口高度减去导航栏、商店信息、促销信息和底部导航栏的高度 */
-  height: calc(100vh - calc(48 * var(--vw-unit)) - calc(56 * var(--vw-unit)) - calc(40 * var(--vw-unit)) - calc(56 * var(--vw-unit)));
-  /* argin-bottom: calc(56 * var(--vw-unit));*/ 
+  /* 计算高度：视口高度减去增大后的logo顶部栏、导航栏和底部导航栏的高度 */
+  height: calc(100vh - calc(62 * var(--vw-unit)) - calc(48 * var(--vw-unit)) - calc(56 * var(--vw-unit)));
   /* 为底部导航栏留出空间 */
 }
 
@@ -1867,6 +1446,24 @@ function closePaymentSuccess() {
 
 /* 响应式调整 */
 @media (max-height: 640px) {
+  .logo-header {
+    padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit));
+    height: calc(52 * var(--vw-unit)); /* 在小屏幕上稍微减小高度 */
+  }
+  
+  .logo-image {
+    height: calc(30 * var(--vw-unit)); /* 在小屏幕上稍微减小尺寸 */
+  }
+  
+  .header-buttons {
+    height: calc(38 * var(--vw-unit)); /* 在小屏幕上稍微减小高度 */
+    min-width: calc(110 * var(--vw-unit));
+  }
+  
+  .more-btn svg, .scan-btn svg {
+    transform: scale(0.9); /* 在小屏幕上稍微缩小图标 */
+  }
+
   .category-item {
     padding: calc(3 * var(--vw-unit)) 0;
     font-size: calc(11 * var(--vw-unit));
@@ -1914,6 +1511,24 @@ function closePaymentSuccess() {
 }
 
 @media (min-height: 800px) {
+  .logo-header {
+    padding: calc(12 * var(--vw-unit)) calc(16 * var(--vw-unit));
+    height: calc(68 * var(--vw-unit)); /* 在大屏幕上进一步增大高度 */
+  }
+  
+  .logo-image {
+    height: calc(40 * var(--vw-unit)); /* 在大屏幕上进一步增大尺寸 */
+  }
+  
+  .header-buttons {
+    height: calc(48 * var(--vw-unit)); /* 在大屏幕上进一步增大按钮高度 */
+    min-width: calc(130 * var(--vw-unit));
+  }
+  
+  .more-btn svg, .scan-btn svg {
+    transform: scale(1.1); /* 在大屏幕上进一步放大图标 */
+  }
+
   .category-item {
     height: calc(54 * var(--vw-unit)); /* 大屏幕上增加高度 */
     font-size: calc(13 * var(--vw-unit));
@@ -1929,7 +1544,6 @@ function closePaymentSuccess() {
   
   .checkout-bar {
     /* 调整结算栏位置 */
-    /* bottom: calc(74 * var(--vw-unit));  */
     bottom: calc(40 * var(--vw-unit)); 
   }
   
@@ -1955,6 +1569,15 @@ function closePaymentSuccess() {
 
 /* 特定宽度调整 */
 @media (max-width: 400px) {
+  .logo-header {
+    padding: calc(6 * var(--vw-unit)) calc(10 * var(--vw-unit)); /* 减少内边距 */
+  }
+
+  .toggle-btn:last-child {
+    font-size: calc(11.5 * var(--vw-unit)); /* 更小的字体 */
+    letter-spacing: calc(-0.1 * var(--vw-unit)); /* 轻微的负字母间距 */
+  }
+  
   .nav-bar {
     padding: calc(6 * var(--vw-unit)) calc(8 * var(--vw-unit)); /* 进一步减少内边距 */
     gap: calc(4 * var(--vw-unit)); /* 进一步缩小元素间距 */
@@ -2139,5 +1762,232 @@ svg path.theme-stroke { stroke: var(--color-blueButtonDark, #003399) !important;
 
 .close-btn:hover {
   background-color: var(--color-backgroundDark, rgba(0, 0, 0, 0.05));
+}
+
+/* Logo顶部栏样式 */
+.logo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10 * var(--vw-unit)) calc(16 * var(--vw-unit));
+  background-color: var(--color-backgroundAlt, white); /* 使用与导航栏相同的背景颜色变量 */
+  height: calc(62 * var(--vw-unit)); /* 放大约1.3倍（从48增加到62） */
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10; /* 确保在较高层级 */
+  transition: background-color 0.3s; /* 平滑过渡背景色 */
+  border-bottom: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05)); /* 添加与导航栏一致的底部边框 */
+}
+
+/* 适应不同主题 - 移除原有的伪元素背景 */
+.logo-header::before {
+  content: none; /* 移除原来的伪元素背景 */
+}
+
+.logo-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: calc(36 * var(--vw-unit)); /* 放大Logo图片（从28增加到36） */
+  max-width: calc(156 * var(--vw-unit)); /* 放大Logo图片（从120增加到156） */
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)); /* 添加微妙阴影 */
+  transition: filter 0.3s; /* 平滑过渡滤镜效果 */
+}
+
+/* 将功能按钮区复制到顶部栏 */
+.header-buttons {
+  margin-left: 0; /* 重置左侧外边距 */
+  margin-right: 0; /* 重置右侧外边距 */
+  background-color: rgba(255, 255, 255, 0.2); /* 保留原有的半透明背景 */
+  border: var(--border-width) solid rgba(255, 255, 255, 0.2); /* 保留原有的半透明边框 */
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) rgba(0, 0, 0, 0.05); /* 微妙阴影 */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s; /* 平滑过渡效果 */
+  height: calc(44 * var(--vw-unit)); /* 增加按钮高度 */
+  min-width: calc(124 * var(--vw-unit)); /* 增加按钮区域宽度 */
+}
+
+/* 在深色模式下调整按钮区域 */
+.alternate-theme .header-buttons {
+  background-color: rgba(255, 255, 255, 0.15); /* 深色主题下稍微降低透明度 */
+  border-color: rgba(255, 255, 255, 0.15); /* 深色主题下调整边框颜色 */
+}
+
+/* 根据主题调整按钮SVG图标颜色 */
+.default-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #333); /* 浅色主题下使用深色图标 */
+}
+
+.alternate-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #fff); /* 深色主题下使用浅色图标 */
+}
+
+.button-divider {
+  width: var(--border-width);
+  height: calc(26 * var(--vw-unit)); /* 增加分隔线高度（从20增加到26） */
+  background-color: var(--color-border, rgba(0, 0, 0, 0.1)); /* 使用主题变量，适应深色模式 */
+  margin: 0 calc(4 * var(--vw-unit)); /* 略微增加分隔线两侧的间距 */
+  flex-shrink: 0;
+  transition: background-color 0.3s; /* 平滑过渡颜色变化 */
+}
+
+/* 深色主题下的分隔线颜色 */
+.alternate-theme .button-divider {
+  background-color: rgba(255, 255, 255, 0.2); /* 深色主题下使用浅色分隔线 */
+}
+
+/* 导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(8 * var(--vw-unit)) calc(12 * var(--vw-unit)); /* 减少水平内边距 */
+  background-color: var(--color-backgroundAlt, white);
+  border-bottom: none;
+  height: calc(48 * var(--vw-unit));
+  box-sizing: border-box;
+  gap: calc(8 * var(--vw-unit)); /* 减少元素之间的间距 */
+}
+
+.delivery-toggle {
+  display: flex;
+  border: var(--border-width) solid rgba(0, 0, 0, 0.05);
+  border-radius: calc(22 * var(--vw-unit));
+  overflow: hidden;
+  flex-shrink: 0;
+  height: var(--button-height-sm);
+  box-sizing: border-box;
+  width: calc(130 * var(--vw-unit)); /* 减少宽度 */
+  margin-right: calc(5 * var(--vw-unit)); /* 减少右侧外边距 */
+}
+
+.toggle-btn {
+  padding: 0 calc(14 * var(--vw-unit)); /* 增加内边距 */
+  border: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  font-size: calc(13 * var(--vw-unit));
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  min-width: calc(60 * var(--vw-unit)); /* 增加最小宽度 */
+  font-weight: 400; /* 统一字重 */
+  flex: 1; /* 平均分配空间 */
+  white-space: nowrap; /* 确保文本不换行 */
+}
+
+/* 专门针对"Pick Up"按钮的样式 */
+.toggle-btn:first-child {
+  min-width: calc(68 * var(--vw-unit)); /* 为Pick Up按钮增加更多宽度 */
+  padding: 0 calc(10 * var(--vw-unit)); /* 调整内边距 */
+  letter-spacing: 0; /* 确保字母间距正常 */
+}
+
+.toggle-btn.active {
+  background-color: var(--color-primary, rgb(0, 46, 184));
+  color: white;
+  font-weight: 500;
+  letter-spacing: calc(0.2 * var(--vw-unit)); /* 增加字母间距提高可读性 */
+}
+
+/* 为了确保文字完整显示，对特定文字内容的按钮进行调整 */
+.toggle-btn:last-child {
+  letter-spacing: 0; /* 对"Delivery"按钮减少字母间距 */
+  font-size: calc(12.5 * var(--vw-unit)); /* 稍微调整字体大小 */
+}
+
+/* 在小屏幕下进一步优化 */
+@media (max-width: 400px) {
+  .toggle-btn:last-child {
+    font-size: calc(11.5 * var(--vw-unit)); /* 更小的字体 */
+    letter-spacing: calc(-0.1 * var(--vw-unit)); /* 轻微的负字母间距 */
+  }
+}
+
+.func-buttons {
+  display: flex;
+  align-items: center;
+  margin-left: calc(5 * var(--vw-unit)); /* 减少左侧外边距 */
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: calc(22 * var(--vw-unit));
+  padding: calc(3 * var(--vw-unit)) calc(6 * var(--vw-unit)); /* 减少内边距 */
+  border: var(--border-width) solid var(--color-border, rgba(0, 0, 0, 0.05));
+  box-shadow: 0 var(--border-width) calc(2 * var(--vw-unit)) 
+              var(--color-backgroundDark, rgba(0, 0, 0, 0.03)); /* 响应主题的阴影 */
+  width: auto;
+  min-width: calc(95 * var(--vw-unit)); /* 减少最小宽度 */
+  height: var(--button-height-sm); /* 明确设置高度 */
+  box-sizing: border-box;
+}
+
+/* 确保左按钮略大一些 */
+.delivery-toggle .toggle-btn:first-child {
+  flex: 1.1; /* 给第一个按钮略多的空间 */
+}
+
+.delivery-toggle .toggle-btn:last-child {
+  flex: 0.9; /* 给第二个按钮略少的空间 */
+}
+
+/* 根据主题调整按钮SVG图标颜色 */
+.default-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #333); /* 浅色主题下使用深色图标 */
+}
+
+.alternate-theme .header-buttons .dots-icon {
+  fill: var(--color-textPrimary, #fff); /* 深色主题下使用浅色图标 */
+}
+
+/* 扫描按钮的特定样式 */
+.default-theme .header-buttons .scan-icon-bg {
+  fill: #222; /* 浅色主题下背景圆为黑色 */
+}
+
+.alternate-theme .header-buttons .scan-icon-bg {
+  fill: #222; /* 深色主题下背景圆保持黑色 */
+}
+
+.default-theme .header-buttons .scan-icon-circle {
+  stroke: white; /* 浅色主题下内圆为白色描边 */
+}
+
+.alternate-theme .header-buttons .scan-icon-circle {
+  stroke: white; /* 深色主题下内圆保持白色描边 */
+}
+
+/* 确保SVG图标颜色平滑过渡 */
+.header-buttons svg circle {
+  transition: fill 0.3s, stroke 0.3s;
+}
+
+/* 按钮悬停效果 */
+.header-buttons .more-btn:hover,
+.header-buttons .scan-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 按钮点击效果 */
+.header-buttons .more-btn:active,
+.header-buttons .scan-btn:active {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+}
+
+/* 深色主题下按钮悬停效果 */
+.alternate-theme .header-buttons .more-btn:hover,
+.alternate-theme .header-buttons .scan-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 深色主题下按钮点击效果 */
+.alternate-theme .header-buttons .more-btn:active,
+.alternate-theme .header-buttons .scan-btn:active {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 </style> 

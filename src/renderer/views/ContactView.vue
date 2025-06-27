@@ -14,14 +14,14 @@
       <div class="qr-code-container">
         <div class="qr-code-item">
           <div class="qr-code-image">
-            <img :src="getImageUrl('QR code.png')" alt="WeChat QR Code" @error="handleImageError">
+            <img :src="getImageUrl('WeChatQR.png')" alt="WeChat QR Code" @error="handleImageError">
           </div>
           <div class="qr-code-label">Wechat</div>
         </div>
         
         <div class="qr-code-item">
           <div class="qr-code-image">
-            <img :src="getImageUrl('QR code.png')" alt="WhatsApp QR Code" @error="handleImageError">
+            <img :src="getImageUrl('WhatsAppQR.jpg')" alt="WhatsApp QR Code" @error="handleImageError">
           </div>
           <div class="qr-code-label">Whatsapp</div>
         </div>

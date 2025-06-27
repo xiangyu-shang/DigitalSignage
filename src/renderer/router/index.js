@@ -62,7 +62,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 更新标题
   if (to.meta.title) {
-    document.title = `数字标牌系统 - ${to.meta.title}`;
+    document.title = `Rusin Display - ${to.meta.title}`;
   }
   next();
 });

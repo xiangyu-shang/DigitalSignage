@@ -2,8 +2,8 @@
   <header class="app-header">
     <div class="header-content">
       <div class="logo" @click="goHome">
-        <img src="@/assets/images/logo.svg" alt="数字标牌商品展示系统" class="logo-image" />
-        <h1 class="logo-text">数字商城</h1>
+        <img src="@/assets/images/logo.svg" alt="Rusin Display" class="logo-image" />
+        <h1 class="logo-text">Rusin Display</h1>
       </div>
       
       <div class="header-right">
