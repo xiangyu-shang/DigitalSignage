@@ -308,6 +308,12 @@ function getProductQuantity(productId) {
 
 // 选择分类
 function selectCategory(categoryId) {
+  // 处理特殊分类 - Contact Us
+  if (categoryId === 'contact') {
+    router.push({ name: 'Contact' });
+    return;
+  }
+  
   currentCategoryId.value = categoryId;
   productStore.setFilters({ categoryId });
   productStore.loadProducts({ refresh: true });

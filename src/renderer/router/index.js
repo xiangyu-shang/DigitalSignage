@@ -37,6 +37,14 @@ const routes = [
       title: '结算页面'
     }
   },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('../views/ContactView.vue'),
+    meta: {
+      title: '联系我们'
+    }
+  },
   // 默认重定向到首页
   {
     path: '/:pathMatch(.*)*',

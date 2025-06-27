@@ -62,6 +62,12 @@ const categories = [
     icon: 'cafe',
     description: 'Special coffee blends crafted by coffee masters',
   },
+  {
+    id: 'contact',
+    name: 'Contact Us',
+    icon: 'call',
+    description: 'Get in touch with us for any inquiries',
+  },
 ];
 
 export default categories; 
