@@ -19,12 +19,12 @@
           <div class="qr-code-label">Wechat</div>
         </div>
         
-        <div class="qr-code-item">
+        <!-- <div class="qr-code-item">
           <div class="qr-code-image">
             <img :src="getImageUrl('QR code.png')" alt="WhatsApp QR Code" @error="handleImageError">
           </div>
           <div class="qr-code-label">Whatsapp</div>
-        </div>
+        </div> -->
       </div>
       
       <div class="contact-info">
@@ -35,7 +35,7 @@
               <path d="M2 7L12 14L22 7" stroke="currentColor" stroke-width="2"/>
             </svg>
           </div>
-          <div class="contact-text">Rusindisplay.com</div>
+          <div class="contact-text">www.vzeosun.com</div>
         </div>
         
         <div class="contact-item">
@@ -47,12 +47,12 @@
               <path d="M12 2C14.5 5 15.5 8 15.5 12C15.5 16 14.5 19 12 22C9.5 19 8.5 16 8.5 12C8.5 8 9.5 5 12 2Z" stroke="currentColor" stroke-width="2"/>
             </svg>
           </div>
-          <div class="contact-text">info@rusindisplay.com</div>
+          <div class="contact-text">463279808@qq.com</div>
         </div>
       </div>
       
       <div class="footer-text">
-        © 2025 Shenzhen Rusin Technology Co., Ltd
+        © 2025 Shenzhen Vzeosun Co., Ltd
       </div>
     </div>
   </div>

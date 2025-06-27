@@ -14,7 +14,7 @@ module.exports = {
   
   // 服务器配置
   server: {
-    port: 8081,
+    port: 8088,
     host: '0.0.0.0', // 允许外部访问
     publicPath: '/',
     apiBaseUrl: '/api' // 后端API基础路径（如果有）

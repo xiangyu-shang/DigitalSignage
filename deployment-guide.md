@@ -114,7 +114,7 @@ module.exports = {
   
   // 服务器配置
   server: {
-    port: 8081,  // 修改为您想使用的端口
+    port: 8088,  // 修改为您想使用的端口
     host: '0.0.0.0',
     publicPath: '/',
     apiBaseUrl: '/api'
@@ -141,7 +141,7 @@ pm2 startup
 
 ```bash
 # 开放应用端口
-sudo ufw allow 8081/tcp
+sudo ufw allow 8088/tcp
 
 # 如果使用标准HTTP端口
 sudo ufw allow 80/tcp
@@ -167,7 +167,7 @@ server {
     server_name your-domain.com;  # 更改为您的域名
     
     location / {
-        proxy_pass http://localhost:8081;
+        proxy_pass http://localhost:8088;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }

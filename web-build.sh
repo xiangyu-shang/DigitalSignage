@@ -133,7 +133,7 @@ fi
 if [ -f "server.js" ]; then
     echo "正在启动Web服务器..."
     # 设置端口（如果提供）
-    PORT=${1:-8081}
+    PORT=${1:-8088}
     node server.js $PORT
 else
     echo "错误: 未找到server.js文件，无法启动服务器"
